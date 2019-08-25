@@ -1,0 +1,21 @@
+version: '3'
+services:
+  image_processing:
+    build: .
+    volumes:
+      - .:/go/src/
+    ports:
+      - 3000:3000
+    privileged: true
+    command: "realize start --run --no-config"
+    depends_on:
+      - lb
+      - storage
+  lb:
+    build: ./docker/lb
+    ports:
+      - 8000:8000
+  storage:
+    build: ./docker/storage
+    ports:
+      - 9000:9000
