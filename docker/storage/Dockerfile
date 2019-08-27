@@ -4,4 +4,3 @@ ENV MINIO_SECRET_KEY password
 EXPOSE 9000
 CMD ["minio", "server", "/data"]
 COPY .keep /data/image_processing/
-COPY sample** /data/sample/
