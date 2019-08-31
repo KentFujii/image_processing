@@ -1,0 +1,17 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: image_processing
+  path: .
+  commands:
+    install:
+      status: true
+      method: go build
+    run:
+      status: true
+      method: ./image_processing
+  watcher:
+    extensions:
+    - go

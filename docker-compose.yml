@@ -7,7 +7,7 @@ services:
     ports:
       - 3000:3000
     privileged: true
-    command: "realize start --run --no-config"
+    command: realize start
     depends_on:
       - lb
       - storage
