@@ -1,4 +1,4 @@
-package service
+package infra
 
 import (
   "fmt"
@@ -9,6 +9,7 @@ import (
 )
 
 // https://dev.classmethod.jp/go/access-minio-using-aws-sdk-for-go/
+// https://qiita.com/hmarf/items/7f4d39c48775c205b99b
 func newS3() (*s3.S3, error) {
   s, err := session.NewSession()
   if err != nil {
