@@ -38,7 +38,7 @@ func flag() {
 	log.Printf("loaded pflag")
 }
 
-func toml() error {
+func yaml() error {
 	viper.SetConfigName(viper.GetString("s"))
 	viper.SetConfigType("yaml")
 	for _, path := range []string{"./", "/go/bin/config"} {
