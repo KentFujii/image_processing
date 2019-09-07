@@ -4,7 +4,7 @@ import (
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"fmt"
+	// "fmt"
 )
 
 func TestService(t *testing.T) {
@@ -13,5 +13,6 @@ func TestService(t *testing.T) {
 }
 
 var _ = Describe("service", func() {
-	fmt.Println(11111)
+	// fmt.Println(11111)
+	Transfer()
 })

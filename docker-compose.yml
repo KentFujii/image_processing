@@ -19,3 +19,6 @@ services:
     build: ./docker/storage
     ports:
       - 9000:9000
+    environment:
+      MINIO_ACCESS_KEY: image_processing
+      MINIO_SECRET_KEY: password
