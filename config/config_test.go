@@ -1,10 +1,10 @@
 package config
 
 import (
+	"os"
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"fmt"
 )
 
 func TestService(t *testing.T) {
@@ -13,5 +13,14 @@ func TestService(t *testing.T) {
 }
 
 var _ = Describe("config", func() {
-	fmt.Println(11111)
+	BeforeEach(func() {
+			os.Setenv("GO_ENV", "test")
+	})
+
+	Context("SetUp", func() {
+		It("should setup config", func() {
+			setUp := SetUp()
+			Expect(setUp.S3.AwsAccountKey).To(Equal("image_processing"))
+		})
+	})
 })

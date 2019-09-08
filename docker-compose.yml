@@ -2,6 +2,9 @@ version: '3'
 services:
   image_processing:
     build: .
+    environment:
+      TZ: Asia/Tokyo
+      GO_ENV: development
     volumes:
       - .:/go/src/
     ports:

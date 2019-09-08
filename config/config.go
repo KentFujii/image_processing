@@ -1,17 +1,16 @@
 package config
 
 import (
-	"fmt"
-	"github.com/spf13/pflag"
+	"os"
 	"github.com/spf13/viper"
-	"log"
 )
 
-var DefaultConfig Config
-
 type S3Config struct {
-	Host string `mapstructure:"host"`
-	ImageBucket string `mapstructure:"image_bucket"`
+	AwsAccountKey string `mapstructure:"aws_account_key"`
+	AwsSecretKey string `mapstructure:"aws_secret_key"`
+	AwsRegion string `mapstructure:"aws_region"`
+	AwsEndpoint string `mapstructure:"aws_endpoint"`
+	Bucket string `mapstructure:"bucket"`
 }
 
 type HPConfig struct {
@@ -24,34 +23,13 @@ type Config struct {
 	HP HPConfig `mapstructure:"hp"`
 }
 
-func Setup() {
-	flag()
-	yaml()
-}
-
-func flag() {
-	pflag.String("s", "local", "local/dev/stg/prd")
-	pflag.Int("worker", 3, "worker int value")
-	pflag.Int("queue", 10000, "queue int value")
-	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
-	log.Printf("loaded pflag")
-}
-
-func yaml() error {
-	viper.SetConfigName(viper.GetString("s"))
+func SetUp() Config {
+	env := os.Getenv("GO_ENV")
+	viper.SetConfigName(env)
+	viper.AddConfigPath("/go/src/config/")
 	viper.SetConfigType("yaml")
-	for _, path := range []string{"./", "/go/bin/config"} {
-		viper.AddConfigPath(path)
-	}
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println(err)
-		return err
-	}
-	if err := viper.Unmarshal(&DefaultConfig); err != nil {
-		panic(err)
-	}
-
-	fmt.Println(DefaultConfig.HP.UserAgent)
-	return nil
+	viper.ReadInConfig()
+	c := Config{}
+	viper.Unmarshal(&c)
+	return c
 }
