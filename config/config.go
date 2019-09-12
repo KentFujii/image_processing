@@ -9,7 +9,7 @@ import (
 func LoadS3Config() s3Config {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
-	viper.AddConfigPath("/go/src/config/")
+	viper.AddConfigPath("/go/src/config/env/")
 	viper.SetConfigType("yaml")
 	viper.ReadInConfig()
 	c := s3Config{}
@@ -20,7 +20,7 @@ func LoadS3Config() s3Config {
 func LoadHpConfig() hpConfig {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
-	viper.AddConfigPath("/go/src/config/")
+	viper.AddConfigPath("/go/src/config/env/")
 	viper.SetConfigType("yaml")
 	viper.ReadInConfig()
 	h := hpConfig{}
