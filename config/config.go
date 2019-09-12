@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// https://www.netlify.com/blog/2016/09/06/creating-a-microservice-boilerplate-in-go/
 func LoadS3Config() s3Config {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
