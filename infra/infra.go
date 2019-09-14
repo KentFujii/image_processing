@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
 // type s3Config interface {
@@ -20,6 +21,7 @@ import (
 // }
 
 // https://github.com/awsdocs/aws-doc-sdk-examples/blob/master/go/example_code/s3/create_new_bucket_and_object.go
+// https://aws.amazon.com/jp/blogs/developer/mocking-out-then-aws-sdk-for-go-for-unit-testing/
 func NewS3Infra() s3Infra {
 	s, _ := session.NewSession()
 	ak := "image_processing"
@@ -35,16 +37,16 @@ func NewS3Infra() s3Infra {
 }
 
 type s3Infra struct {
-	S3 *s3.S3
+	// S3 *s3.S3
+	S3 s3iface.S3API
 }
 
 func (i *s3Infra) ReadObjects() {
-	c := i.S3
 	bucket := "image_processing"
 	var token *string
 	for complete := false; !complete; {
 		in := s3.ListObjectsV2Input{Bucket: &bucket, ContinuationToken: token}
-		out, err := c.ListObjectsV2(&in)
+		out, err := i.S3.ListObjectsV2(&in)
 		if err != nil {
 			panic(err)
 		}
