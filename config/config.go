@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func LoadS3Config() s3Config {
+func NewS3Config() s3Config {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
 	viper.AddConfigPath("/go/src/config/env/")
@@ -16,7 +16,7 @@ func LoadS3Config() s3Config {
 	return c
 }
 
-func LoadHpConfig() hpConfig {
+func NewHpConfig() hpConfig {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
 	viper.AddConfigPath("/go/src/config/env/")

@@ -1,35 +1,38 @@
 package infra
 
 import (
-  "fmt"
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/aws/credentials"
-  "github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/service/s3"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-type s3 struct {
+func NewS3Infra() s3Infra {
 }
 
-type hp struct {
-}
+// type s3 struct {
+// }
 
-func (s *S3) fetch(id int) (err error) {
-	post.Id = id
-	return
-}
+// type hp struct {
+// }
 
-func (post *S3) create() (err error) {
-	return
-}
+// func (s *S3) fetch(id int) (err error) {
+// 	post.Id = id
+// 	return
+// }
 
-func (post *S3) update() (err error) {
-	return
-}
+// func (post *S3) create() (err error) {
+// 	return
+// }
 
-func (post *S3) delete() (err error) {
-	return
-}
+// func (post *S3) update() (err error) {
+// 	return
+// }
+
+// func (post *S3) delete() (err error) {
+// 	return
+// }
 
 // https://dev.classmethod.jp/go/access-minio-using-aws-sdk-for-go/
 // https://qiita.com/hmarf/items/7f4d39c48775c205b99b
