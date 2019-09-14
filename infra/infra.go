@@ -2,37 +2,33 @@ package infra
 
 import (
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	// "github.com/aws/aws-sdk-go/aws"
+	// "github.com/aws/aws-sdk-go/aws/credentials"
+	// "github.com/aws/aws-sdk-go/aws/session"
+	// "github.com/aws/aws-sdk-go/service/s3"
 )
 
-func NewS3Infra() s3Infra {
+type s3Config interface {
+	ReadAwsAccountKey() string
+	ReadAwsSecretKey() string
+	ReadAwsRegion() string
+	ReadAwsEndpoint() string
+	ReadBucket() string
 }
 
-// type s3 struct {
-// }
+type awsS3 interface {
+}
 
-// type hp struct {
-// }
+// https://github.com/awsdocs/aws-doc-sdk-examples/blob/master/go/example_code/s3/create_new_bucket_and_object.go
+func NewS3Infra(c s3Config, a awsS3) {
+	i := s3Infra{}
+}
 
-// func (s *S3) fetch(id int) (err error) {
-// 	post.Id = id
-// 	return
-// }
+type s3Infra struct {
+}
 
-// func (post *S3) create() (err error) {
-// 	return
-// }
-
-// func (post *S3) update() (err error) {
-// 	return
-// }
-
-// func (post *S3) delete() (err error) {
-// 	return
-// }
+func (s *s3Infra) Create() {
+}
 
 // https://dev.classmethod.jp/go/access-minio-using-aws-sdk-for-go/
 // https://qiita.com/hmarf/items/7f4d39c48775c205b99b

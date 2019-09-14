@@ -10,5 +10,6 @@ http://onsi.github.io/ginkgo/
 
 https://github.com/golang/go/wiki/Modules#quick-start
 
-
 https://www.netlify.com/blog/2016/09/06/creating-a-microservice-boilerplate-in-go/
+
+https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/go/example_code/s3
