@@ -21,3 +21,11 @@ https://aws.amazon.com/jp/blogs/developer/mocking-out-then-aws-sdk-for-go-for-un
 https://dev.classmethod.jp/go/access-minio-using-aws-sdk-for-go/
 
 https://qiita.com/hmarf/items/7f4d39c48775c205b99b
+
+app
+
+service
+
+infra
+
+config

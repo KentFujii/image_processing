@@ -7,6 +7,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
+type s3Config interface {
+	ReadAwsAccountKey() string
+	ReadAwsSecretKey() string
+	ReadAwsRegion() string
+	ReadAwsEndpoint() string
+	ReadBucket() string
+}
+
 func NewS3Infra(c s3Config) s3Infra {
 	s, _ := session.NewSession()
 	aak := c.ReadAwsAccountKey()
