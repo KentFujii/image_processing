@@ -14,7 +14,7 @@ func TestService(t *testing.T) {
 
 var _ = Describe("S3", func() {
 	BeforeEach(func() {
-			os.Setenv("GO_ENV", "test")
+		os.Setenv("GO_ENV", "test")
 	})
 	Context("NewS3Config", func() {
 		It("Should read s3 config", func() {
