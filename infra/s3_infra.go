@@ -6,6 +6,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
+// https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/common-examples.html
+// https://godoc.org/github.com/aws/aws-sdk-go/service/s3/s3iface
+// https://aws.amazon.com/jp/blogs/developer/mocking-out-then-aws-sdk-for-go-for-unit-testing/
 type s3Config interface {
 	ReadAwsAccountKey() string
 	ReadAwsSecretKey() string
@@ -15,16 +18,15 @@ type s3Config interface {
 }
 
 type s3Infra struct {
-	// S3 *s3.S3
-	S3 s3iface.S3API
+	Client s3iface.S3API
+	Bucket string
 }
 
 func (i *s3Infra) ReadObjects() {
-	bucket := "image_processing"
 	var token *string
 	for complete := false; !complete; {
-		in := s3.ListObjectsV2Input{Bucket: &bucket, ContinuationToken: token}
-		out, err := i.S3.ListObjectsV2(&in)
+		in := s3.ListObjectsV2Input{Bucket: &i.Bucket, ContinuationToken: token}
+		out, err := i.Client.ListObjectsV2(&in)
 		if err != nil {
 			panic(err)
 		}
