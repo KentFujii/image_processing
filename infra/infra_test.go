@@ -55,7 +55,7 @@ var _ = Describe("S3", func() {
 	Context("LoadS3Config", func() {
 		It("Should create s3 object", func() {
 			fmt.Println(s3Config)
-			i := NewS3Infra(s3Config)
+			i := NewS3Infra(&s3Config)
 			i.ReadObjects()
 		})
 	})
