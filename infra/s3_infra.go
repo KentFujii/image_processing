@@ -1,8 +1,7 @@
 package infra
 
 import (
-	"fmt"
-	"github.com/aws/aws-sdk-go/service/s3"
+	// "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
@@ -14,20 +13,8 @@ type s3Infra struct {
 	Bucket string
 }
 
-func (i *s3Infra) ReadObjects() {
-	var token *string
-	for complete := false; !complete; {
-		in := s3.ListObjectsV2Input{Bucket: &i.Bucket, ContinuationToken: token}
-		out, err := i.Client.ListObjectsV2(&in)
-		if err != nil {
-			panic(err)
-		}
+// func (i *s3Infra) CreateObject(key, content) {
+// }
 
-		for i, o := range out.Contents {
-			fmt.Printf("[%d] : %s\n", i, *o.Key)
-		}
-
-		complete = out.IsTruncated != nil && !*out.IsTruncated
-		token = out.NextContinuationToken
-	}
-}
+// func (i *s3Infra) ReadObject() {
+// }
