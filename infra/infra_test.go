@@ -1,7 +1,7 @@
 package infra
 
 import (
-	"fmt"
+	// "fmt"
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -57,18 +57,46 @@ var _ = Describe("Infra", func() {
 
 	})
 	Context("NewS3Infra", func() {
-		// https://github.com/awsdocs/aws-doc-sdk-examples/tree/master/go/example_code/s3
 		It("Should crud s3 object", func() {
-			// create
 			i := NewS3Infra(&s3Config)
-			params := &s3.PutObjectInput{
+			var putObjectParams *s3.PutObjectInput
+			var err error
+			// create
+			putObjectParams = &s3.PutObjectInput{
 				Bucket: aws.String(i.Bucket),
 				Key: aws.String("test.txt"),
-				Body: bytes.NewReader([]byte("test!!!")),
+				Body: bytes.NewReader([]byte("test!")),
 				ContentType: aws.String("text/plain"),
 			}
-			resp, _ := i.Client.PutObject(params)
-			fmt.Println(resp)
+			_, err = i.Client.PutObject(putObjectParams)
+			Expect(err).To(BeNil())
+			// read
+			getObjectParams := &s3.GetObjectInput{
+				Bucket: aws.String(i.Bucket),
+				Key: aws.String("test.txt"),
+			}
+			resp, _ := i.Client.GetObject(getObjectParams)
+			defer resp.Body.Close()
+			brb := new(bytes.Buffer)
+			brb.ReadFrom(resp.Body)
+			srb := brb.String()
+			Expect(srb).To(Equal("test!"))
+			// update
+			putObjectParams = &s3.PutObjectInput{
+				Bucket: aws.String(i.Bucket),
+				Key: aws.String("test.txt"),
+				Body: bytes.NewReader([]byte("test!!")),
+				ContentType: aws.String("text/plain"),
+			}
+			_, err = i.Client.PutObject(putObjectParams)
+			Expect(err).To(BeNil())
+			// delete
+			deleteObjectParams := &s3.DeleteObjectInput{
+				Bucket: aws.String(i.Bucket),
+				Key: aws.String("test.txt"),
+			}
+			_, err = i.Client.DeleteObject(deleteObjectParams)
+			Expect(err).To(BeNil())
 		})
 	})
 })
