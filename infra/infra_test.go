@@ -1,14 +1,12 @@
 package infra
 
 import (
-	// "fmt"
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"bytes"
-	// "strings"
 )
 
 type mockS3Config struct {
