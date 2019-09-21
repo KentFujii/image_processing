@@ -43,6 +43,12 @@ func TestService(t *testing.T) {
 }
 
 var _ = Describe("Infra", func() {
+	// ['jpg', 'jpeg', 'gif', 'png', '']
+	// process resize_to_limit: [600, 600]
+	// process convert: 'jpg'
+	// SecureRandom.uuidは使わない
+	// 画像名のmd5値を使う
+	// infra層では上記を扱わない
 	var s3Config mockS3Config
 	BeforeEach(func() {
 		s3Config = mockS3Config{
@@ -52,10 +58,10 @@ var _ = Describe("Infra", func() {
 			AwsEndpoint: "http://storage:9000",
 			Bucket: "image_processing",
 		}
-
 	})
 	Context("NewS3Infra", func() {
 		It("Should crud s3 object", func() {
+			// テストデータからtestdataからのjpg使え
 			i := NewS3Infra(&s3Config)
 			var putObjectParams *s3.PutObjectInput
 			var err error
@@ -69,14 +75,20 @@ var _ = Describe("Infra", func() {
 			_, err = i.Client.PutObject(putObjectParams)
 			Expect(err).To(BeNil())
 			// read
+			listObjectsParams := &s3.ListObjectsInput{
+				Bucket: aws.String(i.Bucket),
+				Prefix: aws.String("test.txt"),
+			}
+			listObjectsResp, _ := i.Client.ListObjects(listObjectsParams)
+			Expect(len(listObjectsResp.Contents)).To(Equal(1))
 			getObjectParams := &s3.GetObjectInput{
 				Bucket: aws.String(i.Bucket),
 				Key: aws.String("test.txt"),
 			}
-			resp, _ := i.Client.GetObject(getObjectParams)
-			defer resp.Body.Close()
+			getObjectResp, _ := i.Client.GetObject(getObjectParams)
+			defer getObjectResp.Body.Close()
 			brb := new(bytes.Buffer)
-			brb.ReadFrom(resp.Body)
+			brb.ReadFrom(getObjectResp.Body)
 			srb := brb.String()
 			Expect(srb).To(Equal("test!"))
 			// update
