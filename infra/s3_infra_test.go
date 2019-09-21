@@ -3,7 +3,7 @@ package infra
 import (
 	"fmt"
 	. "github.com/onsi/ginkgo"
-	// . "github.com/onsi/gomega"
+	. "github.com/onsi/gomega"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
@@ -30,8 +30,8 @@ var _ = Describe("s3Infra", func() {
 	})
 	Context("Create", func() {
 		It("Should create s3 object", func() {
-			fmt.Println(infra)
-			// Expect(infra.Create()).To(Equal("hoge"))
+			// fmt.Println(infra)
+			Expect(infra.Create()).To(Equal("hoge"))
 		})
 	})
 })

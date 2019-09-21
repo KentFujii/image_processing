@@ -13,8 +13,8 @@ type s3Infra struct {
 	Bucket string
 }
 
-// func (i *s3Infra) Create(key, content) {
-// }
+func (i *s3Infra) Create(key, content) {
+}
 
 // func (i *s3Infra) ReadObject() {
 // }
