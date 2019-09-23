@@ -18,11 +18,19 @@ func (m *mockS3Client) PutObject(input *s3.PutObjectInput) (*s3.PutObjectOutput,
 	}, nil
 }
 
-// func (m *mockS3Client) ListObjects(input *s3.ListObjectsInput) (*s3.ListObjectsOutput, error) {
-	// return &s3.ListObjectsOutput{
-	// 	Contents: ,
-	// }, nil
-// }
+func (m *mockS3Client) ListObjects(input *s3.ListObjectsInput) (*s3.ListObjectsOutput, error) {
+	key0 := "test/test0.txt"
+	key1 := "test/test0.txt"
+	object0 := &s3.Object{
+		Key: &key0,
+	}
+	object1 := &s3.Object{
+		Key: &key1,
+	}
+	return &s3.ListObjectsOutput{
+		Contents: object,
+	}, nil
+}
 
 var _ = Describe("s3Infra", func() {
 	var infra s3Infra
