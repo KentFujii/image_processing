@@ -43,12 +43,6 @@ func TestService(t *testing.T) {
 }
 
 var _ = Describe("Infra", func() {
-	// ['jpg', 'jpeg', 'gif', 'png', '']
-	// process resize_to_limit: [600, 600]
-	// process convert: 'jpg'
-	// SecureRandom.uuidは使わない
-	// 画像名のmd5値を使う
-	// infra層では上記を扱わない
 	var s3Config mockS3Config
 	BeforeEach(func() {
 		s3Config = mockS3Config{
@@ -68,7 +62,7 @@ var _ = Describe("Infra", func() {
 			// create
 			putObjectParams = &s3.PutObjectInput{
 				Bucket: aws.String(i.Bucket),
-				Key: aws.String("test.txt"),
+				Key: aws.String("test/test.txt"),
 				Body: bytes.NewReader([]byte("test!")),
 				ContentType: aws.String("text/plain"),
 			}
@@ -77,13 +71,16 @@ var _ = Describe("Infra", func() {
 			// read
 			listObjectsParams := &s3.ListObjectsInput{
 				Bucket: aws.String(i.Bucket),
-				Prefix: aws.String("test.txt"),
+				Prefix: aws.String("test"),
 			}
 			listObjectsResp, _ := i.Client.ListObjects(listObjectsParams)
+			Expect(*listObjectsResp.Name).To(Equal("image_processing"))
+			Expect(*listObjectsResp.Prefix).To(Equal("test"))
+			Expect(*listObjectsResp.Contents[0].Key).To(Equal("test/test.txt"))
 			Expect(len(listObjectsResp.Contents)).To(Equal(1))
 			getObjectParams := &s3.GetObjectInput{
 				Bucket: aws.String(i.Bucket),
-				Key: aws.String("test.txt"),
+				Key: aws.String(*listObjectsResp.Contents[0].Key),
 			}
 			getObjectResp, _ := i.Client.GetObject(getObjectParams)
 			defer getObjectResp.Body.Close()
