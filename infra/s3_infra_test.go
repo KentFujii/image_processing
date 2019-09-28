@@ -52,15 +52,20 @@ var _ = Describe("s3Infra", func() {
 		}
 
 	})
-	Context("Create", func() {
-		It("Should create s3 object", func() {
-			Expect(infra.Create("testKey", "testContent", "image/jpeg")).To(BeNil())
+	Context("Put", func() {
+		It("Should put s3 object", func() {
+			Expect(infra.Put("testKey", "testContent", "image/jpeg")).To(BeNil())
 		})
 	})
-	Context("Read", func() {
-		It("Should read s3 object", func() {
-			bodies := infra.Read("testPrefix")
+	Context("List", func() {
+		It("Should list s3 object", func() {
+			bodies := infra.List("testPrefix")
 			Expect(len(bodies)).To(Equal(2))
+		})
+	})
+	Context("Delete", func() {
+		It("Should delete s3 object", func() {
+			Expect(infra.Delete("testKey")).To(BeNil())
 		})
 	})
 })

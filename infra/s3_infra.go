@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"fmt"
 	"bytes"
 	"golang.org/x/xerrors"
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,7 +14,7 @@ type s3Infra struct {
 	Bucket string
 }
 
-func (i *s3Infra) Create(key string, content string, contentType string) error {
+func (i *s3Infra) Put(key string, content string, contentType string) error {
 	putObjectParams := &s3.PutObjectInput{
 		Bucket: aws.String(i.Bucket),
 		Key: aws.String(key),
@@ -27,7 +28,7 @@ func (i *s3Infra) Create(key string, content string, contentType string) error {
 	return nil
 }
 
-func (i *s3Infra) Read(prefix string) map[string][]byte {
+func (i *s3Infra) List(prefix string) map[string][]byte {
 	listObjectsParams := &s3.ListObjectsInput{
 		Bucket: aws.String(i.Bucket),
 		Prefix: aws.String(prefix),
@@ -49,4 +50,9 @@ func (i *s3Infra) Read(prefix string) map[string][]byte {
 		bodies[*content.Key] = brb.Bytes()
 	}
 	return bodies
+}
+
+func (i *s3Infra) Delete(key string) error {
+	fmt.Println(key)
+	return nil
 }
