@@ -1,3 +1,4 @@
+package domain
 // https://github.com/disintegration/imaging
 // ['jpg', 'jpeg', 'gif', 'png', '']
 // process resize_to_limit: [600, 600]

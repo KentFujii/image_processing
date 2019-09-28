@@ -84,7 +84,7 @@ var _ = Describe("Infra", func() {
 			}
 			getObjectResp, _ := i.Client.GetObject(getObjectParams)
 			defer getObjectResp.Body.Close()
-			brb := new(bytes.Buffer)
+			brb := bytes.Buffer{}
 			brb.ReadFrom(getObjectResp.Body)
 			srb := brb.String()
 			Expect(srb).To(Equal("test!"))
