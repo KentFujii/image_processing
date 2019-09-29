@@ -1,7 +1,6 @@
 package infra
 
 import (
-	"fmt"
 	"bytes"
 	"golang.org/x/xerrors"
 	"github.com/aws/aws-sdk-go/aws"
@@ -53,6 +52,13 @@ func (i *s3Infra) List(prefix string) map[string][]byte {
 }
 
 func (i *s3Infra) Delete(key string) error {
-	fmt.Println(key)
+	deleteObjectParams := &s3.DeleteObjectInput{
+		Bucket: aws.String(i.Bucket),
+		Key: aws.String(key),
+	}
+	_, err := i.Client.DeleteObject(deleteObjectParams)
+	if err != nil {
+		return xerrors.Errorf("Delete error: %w", err)
+	}
 	return nil
 }

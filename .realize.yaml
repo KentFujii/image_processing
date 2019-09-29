@@ -13,5 +13,7 @@ schema:
       status: true
       method: ./image_processing
   watcher:
+    paths:
+    - ./
     extensions:
     - go

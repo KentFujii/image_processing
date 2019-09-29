@@ -43,6 +43,10 @@ func (m *mockS3Client) GetObject(input *s3.GetObjectInput) (*s3.GetObjectOutput,
 	}, nil
 }
 
+func (m *mockS3Client) DeleteObject(input *s3.DeleteObjectInput) (*s3.DeleteObjectOutput, error) {
+	return &s3.DeleteObjectOutput{}, nil
+}
+
 var _ = Describe("s3Infra", func() {
 	var infra s3Infra
 	BeforeEach(func() {
