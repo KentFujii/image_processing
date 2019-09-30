@@ -27,6 +27,7 @@ func (i *s3Infra) Put(key string, content string, contentType string) error {
 	return nil
 }
 
+// ListObjectsとGetObjectを分離する
 func (i *s3Infra) List(prefix string) map[string][]byte {
 	listObjectsParams := &s3.ListObjectsInput{
 		Bucket: aws.String(i.Bucket),
