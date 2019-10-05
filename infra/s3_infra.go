@@ -27,29 +27,30 @@ func (i *s3Infra) Put(key string, content string, contentType string) error {
 	return nil
 }
 
-// ListObjectsとGetObjectを分離する
-func (i *s3Infra) List(prefix string) map[string][]byte {
+func (i *s3Infra) List(prefix string) []string {
 	listObjectsParams := &s3.ListObjectsInput{
 		Bucket: aws.String(i.Bucket),
 		Prefix: aws.String(prefix),
 	}
 	listObjectsResp, _ := i.Client.ListObjects(listObjectsParams)
-	bodies := map[string][]byte{}
-	var getObjectParams *s3.GetObjectInput
-	var getObjectResp *s3.GetObjectOutput
-	var brb bytes.Buffer
+	keys := []string{}
 	for _, content := range(listObjectsResp.Contents) {
-		getObjectParams = &s3.GetObjectInput{
-			Bucket: aws.String(i.Bucket),
-			Key: aws.String(*content.Key),
-		}
-		getObjectResp, _ = i.Client.GetObject(getObjectParams)
-		defer getObjectResp.Body.Close()
-		brb = bytes.Buffer{}
-		brb.ReadFrom(getObjectResp.Body)
-		bodies[*content.Key] = brb.Bytes()
+		keys = append(keys, *content.Key)
 	}
-	return bodies
+	return keys
+}
+
+func (i *s3Infra) Get(key string) []byte {
+	getObjectInput := &s3.GetObjectInput{
+		Bucket: aws.String(i.Bucket),
+		Key: aws.String(key),
+	}
+	getObject, _ := i.Client.GetObject(getObjectInput)
+	defer getObject.Body.Close()
+	brb := bytes.Buffer{}
+	brb.ReadFrom(getObject.Body)
+	body := brb.Bytes()
+	return body
 }
 
 func (i *s3Infra) Delete(key string) error {
