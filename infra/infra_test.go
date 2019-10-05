@@ -37,7 +37,7 @@ func (c *mockS3Config) ReadBucket() string {
 	return c.Bucket
 }
 
-func TestService(t *testing.T) {
+func TestInfra(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Infra Suite")
 }

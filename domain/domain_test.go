@@ -6,7 +6,15 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestService(t *testing.T) {
+func TestDomain(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Infra Suite")
+	RunSpecs(t, "Domain Suite")
 }
+
+var _ = Describe("Domain", func() {
+	// var s3Config mockS3Config
+	// BeforeEach(func() {
+	// })
+	// Context("NewS3Domain", func() {
+	// })
+})
