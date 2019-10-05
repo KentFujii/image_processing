@@ -63,14 +63,14 @@ var _ = Describe("s3Infra", func() {
 	})
 	Context("List", func() {
 		It("Should list s3 object", func() {
-			keys := infra.List("testPrefix")
+			keys, _ := infra.List("testPrefix")
 			Expect(keys[0]).To(Equal("test/test0.txt"))
 			Expect(keys[1]).To(Equal("test/test1.txt"))
 		})
 	})
 	Context("Get", func() {
 		It("Should Get s3 object", func() {
-			body := infra.Get("test/test0.txt")
+			body, _ := infra.Get("test/test0.txt")
 			Expect(string(body)).To(Equal("test body!"))
 		})
 	})

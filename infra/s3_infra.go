@@ -27,30 +27,36 @@ func (i *s3Infra) Put(key string, content string, contentType string) error {
 	return nil
 }
 
-func (i *s3Infra) List(prefix string) []string {
+func (i *s3Infra) List(prefix string) ([]string, error) {
 	listObjectsParams := &s3.ListObjectsInput{
 		Bucket: aws.String(i.Bucket),
 		Prefix: aws.String(prefix),
 	}
-	listObjectsResp, _ := i.Client.ListObjects(listObjectsParams)
+	listObjectsResp, err := i.Client.ListObjects(listObjectsParams)
+	if err != nil {
+		return nil, xerrors.Errorf("List error: %w", err)
+	}
 	keys := []string{}
 	for _, content := range(listObjectsResp.Contents) {
 		keys = append(keys, *content.Key)
 	}
-	return keys
+	return keys, nil
 }
 
-func (i *s3Infra) Get(key string) []byte {
+func (i *s3Infra) Get(key string) ([]byte, error) {
 	getObjectInput := &s3.GetObjectInput{
 		Bucket: aws.String(i.Bucket),
 		Key: aws.String(key),
 	}
-	getObject, _ := i.Client.GetObject(getObjectInput)
+	getObject, err := i.Client.GetObject(getObjectInput)
+	if err != nil {
+		return nil, xerrors.Errorf("Get error: %w", err)
+	}
 	defer getObject.Body.Close()
 	brb := bytes.Buffer{}
 	brb.ReadFrom(getObject.Body)
 	body := brb.Bytes()
-	return body
+	return body, nil
 }
 
 func (i *s3Infra) Delete(key string) error {
