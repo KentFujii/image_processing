@@ -15,11 +15,11 @@ services:
       - lb
       - storage
   lb:
-    build: ./docker/lb
+    build: ./Docker/lb
     ports:
       - 8000:8000
   storage:
-    build: ./docker/storage
+    build: ./Docker/storage
     ports:
       - 9000:9000
     environment:

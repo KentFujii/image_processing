@@ -54,7 +54,6 @@ var _ = Describe("s3Infra", func() {
 			Client: &mockS3Client{},
 			Bucket: "image_processing",
 		}
-
 	})
 	Context("Put", func() {
 		It("Should put s3 object", func() {
