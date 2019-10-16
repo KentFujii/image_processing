@@ -1,6 +1,7 @@
 package config
 
 import (
+	"reflect"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -20,14 +21,16 @@ var _ = Describe("imageMagickConfig", func() {
 			Expect(config.ReadConvert()).To(Equal("jpg"))
 		})
 	})
-	// Context("ReadExtensionWhitelist", func() {
-	// 	It("Should read extension whitelist", func() {
-	// 		Expect(config.ReadExtensionWhitelist()).To(Equal(["jpg", "jpeg", "gif", "png", ""]))
-	// 	})
-	// })
-	// Context("ReadResizeToLimit", func() {
-	// 	It("Should read resize to limit", func() {
-	// 		Expect(config.ReadResizeToLimit()).To(Equal({"height": 600, "width": 600}))
-	// 	})
-	// })
+	Context("ReadExtensionWhitelist", func() {
+		It("Should read extension whitelist", func() {
+			equal := reflect.DeepEqual(config.ReadExtensionWhitelist(), []string{"jpg", "jpeg", "gif", "png", ""})
+			Expect(equal).To(Equal(true))
+		})
+	})
+	Context("ReadResizeToLimit", func() {
+		It("Should read resize to limit", func() {
+			equal := reflect.DeepEqual(config.ReadResizeToLimit(), map[string]int{"height": 600, "width": 600})
+			Expect(equal).To(Equal(true))
+		})
+	})
 })
