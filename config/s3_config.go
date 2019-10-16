@@ -8,22 +8,22 @@ type s3Config struct {
 	Bucket string `mapstructure:"bucket"`
 }
 
-func (s *s3Config) ReadAwsAccountKey() string {
-	return s.AwsAccountKey
+func (c *s3Config) ReadAwsAccountKey() string {
+	return c.AwsAccountKey
 }
 
-func (s *s3Config) ReadAwsSecretKey() string {
-	return s.AwsSecretKey
+func (c *s3Config) ReadAwsSecretKey() string {
+	return c.AwsSecretKey
 }
 
-func (s *s3Config) ReadAwsRegion() string {
-	return s.AwsRegion
+func (c *s3Config) ReadAwsRegion() string {
+	return c.AwsRegion
 }
 
-func (s *s3Config) ReadAwsEndpoint() string {
-	return s.AwsEndpoint
+func (c *s3Config) ReadAwsEndpoint() string {
+	return c.AwsEndpoint
 }
 
-func (s *s3Config) ReadBucket() string {
-	return s.Bucket
+func (c *s3Config) ReadBucket() string {
+	return c.Bucket
 }

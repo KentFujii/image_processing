@@ -4,6 +4,6 @@ type hpConfig struct {
 	UserAgent string `mapstructure:"user_agent"`
 }
 
-func (h *hpConfig) ReadUserAgent() string {
-	return h.UserAgent
+func (c *hpConfig) ReadUserAgent() string {
+	return c.UserAgent
 }
