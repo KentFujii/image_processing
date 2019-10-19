@@ -37,6 +37,23 @@ func (c *mockS3Config) ReadBucket() string {
 	return c.Bucket
 }
 
+type mockImageMagickConfig struct {
+	Convert string
+	ExtensionWhitelist []string
+	ResizeToLimit map[string]int
+}
+
+func (c *mockImageMagickConfig) ReadConvert() string {
+	return c.Convert
+}
+func (c *mockImageMagickConfig) ReadExtensionWhitelist() []string {
+	return c.ExtensionWhitelist
+}
+
+func (c *mockImageMagickConfig) ReadResizeToLimit() map[string]int {
+	return c.ResizeToLimit
+}
+
 func TestInfra(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Infra Suite")
@@ -44,6 +61,7 @@ func TestInfra(t *testing.T) {
 
 var _ = Describe("Infra", func() {
 	var s3Config mockS3Config
+	var imageMagickConfig mockImageMagickConfig
 	BeforeEach(func() {
 		s3Config = mockS3Config{
 			AwsAccountKey: "image_processing",
@@ -51,6 +69,11 @@ var _ = Describe("Infra", func() {
 			AwsRegion: "ap-northeast-1",
 			AwsEndpoint: "http://storage:9000",
 			Bucket: "image_processing",
+		}
+		imageMagickConfig = mockImageMagickConfig{
+			Convert: "jpg",
+			ExtensionWhitelist: []string{"jpg", "jpeg", "gif", "png", ""},
+			ResizeToLimit: map[string]int{"height": 600, "width": 600},
 		}
 	})
 	Context("NewS3Infra", func() {
@@ -104,5 +127,8 @@ var _ = Describe("Infra", func() {
 			_, err = i.Client.DeleteObject(deleteObjectParams)
 			Expect(err).To(BeNil())
 		})
+	})
+	Context("NewImageMagickInfra", func() {
+		i := NewImageMagickInfra(&imageMagickConfig)
 	})
 })

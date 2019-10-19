@@ -1,6 +1,5 @@
 package config
 
-// https://github.com/gographics/imagick
 type imageMagickConfig struct {
 	Convert string `mapstructure:"convert"`
 	ExtensionWhitelist []string `mapstructure:"extension_whitelist"`

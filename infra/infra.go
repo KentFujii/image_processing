@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
 type s3Config interface {
@@ -13,6 +14,12 @@ type s3Config interface {
 	ReadAwsRegion() string
 	ReadAwsEndpoint() string
 	ReadBucket() string
+}
+
+type imageMagickConfig interface {
+	ReadConvert() string
+	ReadExtensionWhitelist() []string
+	ReadResizeToLimit() map[string]int
 }
 
 func NewS3Infra(c s3Config) s3Infra {
@@ -29,4 +36,9 @@ func NewS3Infra(c s3Config) s3Infra {
 		S3ForcePathStyle: aws.Bool(true),
 	}
 	return s3Infra{Client: s3.New(s, &cfg), Bucket: b}
+}
+
+func NewImageMagickInfra(c imageMagickConfig) imageMagickInfra {
+	return s3Infra{Client: imagick}
+
 }
