@@ -27,13 +27,13 @@ func NewHpConfig() hpConfig {
 	return c
 }
 
-func NewImageMagickConfig() imageMagickConfig {
+func NewImageConfig() imageConfig {
 	env := os.Getenv("GO_ENV")
 	viper.SetConfigName(env)
 	viper.AddConfigPath("/go/src/config/env/")
 	viper.SetConfigType("yaml")
 	viper.ReadInConfig()
-	c := imageMagickConfig{}
-	viper.UnmarshalKey("image_magick", &c)
+	c := imageConfig{}
+	viper.UnmarshalKey("image", &c)
 	return c
 }

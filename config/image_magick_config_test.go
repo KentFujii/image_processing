@@ -7,9 +7,9 @@ import (
 )
 
 var _ = Describe("imageMagickConfig", func() {
-	var config imageMagickConfig
+	var config imageConfig
 	BeforeEach(func() {
-		config = imageMagickConfig{
+		config = imageConfig{
 			ConvertTo: "jpg",
 			FormatWhitelist: []string{"jpg", "jpeg", "gif", "png", ""},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},

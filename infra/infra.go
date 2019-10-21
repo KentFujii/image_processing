@@ -37,11 +37,3 @@ func NewS3Infra(c s3Config) s3Infra {
 	}
 	return s3Infra{Client: s3.New(s, &cfg), Bucket: b}
 }
-
-func NewImageMagickInfra(c imageMagickConfig) imageMagickInfra {
-	convertTo := c.ReadConvertTo()
-	formatWhitelist := c.ReadFormatWhitelist()
-	resizeToLimit := c.ReadResizeToLimit()
-	resizeToFit := c.ReadResizeToFit()
-	return imageMagickInfra{ConvertTo: convertTo, FormatWhitelist: formatWhitelist, ResizeToLimit: resizeToLimit, ResizeToFit: resizeToFit}
-}
