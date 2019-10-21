@@ -1,13 +1,13 @@
 package domain
 
-type imageMagickConfig interface {
+type imageConfig interface {
 	ReadConvertTo() string
 	ReadFormatWhitelist() []string
 	ReadResizeToLimit() map[string]int
 	ReadResizeToFit() map[string]int
 }
 
-func NewImageDomain(c imageMagickConfig) imageMagickInfra {
+func NewImageDomain(c imageConfig) imageMagickInfra {
 	convertTo := c.ReadConvertTo()
 	formatWhitelist := c.ReadFormatWhitelist()
 	resizeToLimit := c.ReadResizeToLimit()

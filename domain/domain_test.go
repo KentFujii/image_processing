@@ -39,7 +39,7 @@ var _ = Describe("Infra", func() {
 	var imageMagickConfig mockImageMagickConfig
 	BeforeEach(func() {
 		imageMagickConfig = mockImageMagickConfig{
-			Convert: "jpg",
+			Convert: "jpeg",
 			FormatWhitelist: []string{"jpeg", "gif", "png"},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},
 			ResizeToFit: map[string]int{"height": 100, "width": 100},

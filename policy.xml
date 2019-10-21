@@ -9,10 +9,8 @@
 ]>
 <policymap>
   <policy domain="resource" name="temporary-path" value="/tmp"/>
-  <policy domain="resource" name="temporary-path" value="/tmp"/>
-  <policy domain="coder" rights="none" pattern="EPHEMERAL" />
-  <policy domain="coder" rights="read" pattern="HTTPS" />
-  <policy domain="coder" rights="read" pattern="HTTP" />
-  <policy domain="coder" rights="read" pattern="URL" />
-  <policy domain="coder" rights="none" pattern="FTP" />
+  <policy domain="coder" rights="none" pattern="*" />
+  <policy domain="coder" rights="read|write" pattern="JPEG" />
+  <policy domain="coder" rights="read|write" pattern="GIF" />
+  <policy domain="coder" rights="read|write" pattern="PNG" />
 </policymap>
