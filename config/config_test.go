@@ -35,7 +35,7 @@ var _ = Describe("Config", func() {
 	Context("NewImageMagickConfig", func() {
 		It("Should read image_magick config", func() {
 			c := NewImageMagickConfig()
-			Expect(c.Convert).To(Equal("jpg"))
+			Expect(c.ConvertTo).To(Equal("jpg"))
 		})
 	})
 })

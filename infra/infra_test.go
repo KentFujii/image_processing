@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"fmt"
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -39,19 +40,24 @@ func (c *mockS3Config) ReadBucket() string {
 
 type mockImageMagickConfig struct {
 	Convert string
-	ExtensionWhitelist []string
+	FormatWhitelist []string
 	ResizeToLimit map[string]int
+	ResizeToFit map[string]int
 }
 
-func (c *mockImageMagickConfig) ReadConvert() string {
+func (c *mockImageMagickConfig) ReadConvertTo() string {
 	return c.Convert
 }
-func (c *mockImageMagickConfig) ReadExtensionWhitelist() []string {
-	return c.ExtensionWhitelist
+func (c *mockImageMagickConfig) ReadFormatWhitelist() []string {
+	return c.FormatWhitelist
 }
 
 func (c *mockImageMagickConfig) ReadResizeToLimit() map[string]int {
 	return c.ResizeToLimit
+}
+
+func (c *mockImageMagickConfig) ReadResizeToFit() map[string]int {
+	return c.ResizeToFit
 }
 
 func TestInfra(t *testing.T) {
@@ -72,8 +78,9 @@ var _ = Describe("Infra", func() {
 		}
 		imageMagickConfig = mockImageMagickConfig{
 			Convert: "jpg",
-			ExtensionWhitelist: []string{"jpg", "jpeg", "gif", "png", ""},
+			FormatWhitelist: []string{"jpeg", "gif", "png"},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},
+			ResizeToFit: map[string]int{"height": 100, "width": 100},
 		}
 	})
 	Context("NewS3Infra", func() {
@@ -129,6 +136,10 @@ var _ = Describe("Infra", func() {
 		})
 	})
 	Context("NewImageMagickInfra", func() {
-		i := NewImageMagickInfra(&imageMagickConfig)
+		It("Should Put/List/Delete s3 object", func() {
+			i := NewImageMagickInfra(&imageMagickConfig)
+			fmt.Println(i.ConvertTo)
+			fmt.Println(i.FormatWhitelist)
+		})
 	})
 })

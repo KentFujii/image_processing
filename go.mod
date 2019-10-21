@@ -8,4 +8,5 @@ require (
 	github.com/onsi/gomega v1.7.0
 	github.com/spf13/viper v1.4.0
 	golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898
+	gopkg.in/gographics/imagick.v2 v2.5.0
 )
