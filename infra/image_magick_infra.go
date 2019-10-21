@@ -16,12 +16,17 @@ type imageMagickInfra struct {
 // https://godoc.org/gopkg.in/gographics/imagick.v2/imagick
 // https://socketloop.com/tutorials/golang-convert-byte-to-image
 // https://www.sample-videos.com/download-sample-png-image.php
+
+// identify butterfly-50kb.jpg
 func (i *imageMagickInfra) ConvertImage(blob []byte) []byte {
 	imagick.Initialize()
 	defer imagick.Terminate()
 	mw := imagick.NewMagickWand()
+	// Read
 	mw.ReadImageBlob(blob)
 	fmt.Println(blob)
+	// Convert
+	// Resize
 	return blob
 }
 

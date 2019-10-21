@@ -7,7 +7,7 @@ s3:
 hp:
   user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/602.4.8 (KHTML, like Gecko) Version/10.0.3 Safari/602.4.8
 image_magick:
-  convert_to: jpg
+  convert_to: jpeg
   format_whitelist: ['jpeg', 'gif', 'png']
   resize_to_limit: {height: 600, width: 600}
   resize_to_fit: {height: 100, width: 100}

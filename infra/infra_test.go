@@ -1,7 +1,6 @@
 package infra
 
 import (
-	"fmt"
 	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -136,10 +135,9 @@ var _ = Describe("Infra", func() {
 		})
 	})
 	Context("NewImageMagickInfra", func() {
-		It("Should Put/List/Delete s3 object", func() {
+		It("Should return ImageMagick object", func() {
 			i := NewImageMagickInfra(&imageMagickConfig)
-			fmt.Println(i.ConvertTo)
-			fmt.Println(i.FormatWhitelist)
+			Expect(i.ConvertTo).To(Equal("jpg"))
 		})
 	})
 })
