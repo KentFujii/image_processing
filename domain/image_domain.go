@@ -18,6 +18,7 @@ type imageMagickInfra struct {
 // https://www.sample-videos.com/download-sample-png-image.php
 
 // identify butterfly-50kb.jpg
+// https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
 func (i *imageMagickInfra) ConvertImage(blob []byte) []byte {
 	imagick.Initialize()
 	defer imagick.Terminate()
