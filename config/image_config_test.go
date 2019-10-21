@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("imageMagickConfig", func() {
+var _ = Describe("imageConfig", func() {
 	var config imageConfig
 	BeforeEach(func() {
 		config = imageConfig{

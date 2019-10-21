@@ -15,13 +15,6 @@ type s3Config interface {
 	ReadBucket() string
 }
 
-type imageMagickConfig interface {
-	ReadConvertTo() string
-	ReadFormatWhitelist() []string
-	ReadResizeToLimit() map[string]int
-	ReadResizeToFit() map[string]int
-}
-
 func NewS3Infra(c s3Config) s3Infra {
 	s, _ := session.NewSession()
 	aak := c.ReadAwsAccountKey()
