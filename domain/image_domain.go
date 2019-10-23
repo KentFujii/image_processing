@@ -1,9 +1,9 @@
 package domain
 
-// import (
-// 	"fmt"
-// 	"gopkg.in/gographics/imagick.v2/imagick"
-// )
+import (
+	"fmt"
+	"os/exec"
+)
 
 type imageDomain struct {
 	ConvertTo string
@@ -12,24 +12,16 @@ type imageDomain struct {
 	ResizeToFit map[string]int
 }
 
-// // https://github.com/gographics/imagick/blob/master/examples/docker/main.go
-// // https://godoc.org/gopkg.in/gographics/imagick.v2/imagick
-// // https://socketloop.com/tutorials/golang-convert-byte-to-image
-// // https://www.sample-videos.com/download-sample-png-image.php
-
-// // identify butterfly-50kb.jpg
-// // https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
-// func (i *imageMagickInfra) ConvertImage(blob []byte) []byte {
-// 	imagick.Initialize()
-// 	defer imagick.Terminate()
-// 	mw := imagick.NewMagickWand()
-// 	// Read
-// 	mw.ReadImageBlob(blob)
-// 	fmt.Println(blob)
-// 	// Convert
-// 	// Resize
-// 	return blob
-// }
+// https://socketloop.com/tutorials/golang-convert-an-image-file-to-byte
+// https://socketloop.com/tutorials/golang-convert-byte-to-image
+// https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
+// identify butterfly-50kb.jpg
+func (i *imageDomain) ConvertImage(blob []byte) []byte {
+	// Read
+	// Convert
+	// Resize
+	return blob
+}
 
 // func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {
 // 	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
