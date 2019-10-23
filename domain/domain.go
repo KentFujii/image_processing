@@ -7,10 +7,10 @@ type imageConfig interface {
 	ReadResizeToFit() map[string]int
 }
 
-func NewImageDomain(c imageConfig) imageMagickInfra {
+func NewImageDomain(c imageConfig) imageDomain {
 	convertTo := c.ReadConvertTo()
 	formatWhitelist := c.ReadFormatWhitelist()
 	resizeToLimit := c.ReadResizeToLimit()
 	resizeToFit := c.ReadResizeToFit()
-	return imageMagickInfra{ConvertTo: convertTo, FormatWhitelist: formatWhitelist, ResizeToLimit: resizeToLimit, ResizeToFit: resizeToFit}
+	return imageDomain{ConvertTo: convertTo, FormatWhitelist: formatWhitelist, ResizeToLimit: resizeToLimit, ResizeToFit: resizeToFit}
 }
