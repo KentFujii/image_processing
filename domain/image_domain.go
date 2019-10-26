@@ -1,8 +1,7 @@
 package domain
 
 import (
-	"fmt"
-	"os/exec"
+	// "os/exec"
 )
 
 type imageDomain struct {
@@ -16,11 +15,11 @@ type imageDomain struct {
 // https://socketloop.com/tutorials/golang-convert-byte-to-image
 // https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
 // identify butterfly-50kb.jpg
-func (i *imageDomain) ConvertImage(blob []byte) []byte {
+func (i *imageDomain) ConvertImage(bin []byte) []byte {
 	// Read
 	// Convert
 	// Resize
-	return blob
+	return bin
 }
 
 // func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {

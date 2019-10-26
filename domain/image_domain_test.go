@@ -1,15 +1,14 @@
 package domain
 
 import (
+	"path"
 	"runtime"
+	"os"
+	"fmt"
+	"bytes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
-
-func TestInfra(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Infra Suite")
-}
 
 func filePath(name string) string {
 	_, filename, _, ok := runtime.Caller(0)
@@ -33,8 +32,10 @@ var _ = Describe("s3Infra", func() {
 		It("Should convert png image to jpg", func() {
 			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
 			defer file.Close()
-			infra.ConvertImage(image)
-			// Expect().To(BeNil())
+			brb := bytes.Buffer{}
+			brb.ReadFrom(file)
+			fmt.Println(domain.ConvertImage(brb.Bytes()))
+			Expect(nil).To(BeNil())
 		})
 	})
 })
