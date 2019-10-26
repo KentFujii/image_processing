@@ -29,6 +29,11 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
+func (d *imageDomain) Resize(bin []byte) ([]byte, error) {
+	return bin, nil
+	// resize_to_limit
+}
+
 // func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {
 // 	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
 // 	// magick_remote_image = Magick::Image.from_blob(remote_image_bin).first

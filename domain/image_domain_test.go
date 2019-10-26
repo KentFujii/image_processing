@@ -29,7 +29,7 @@ var _ = Describe("s3Infra", func() {
 		}
 	})
 	Context("ConvertFormat", func() {
-		It("Should convert png image to jpg", func() {
+		It("Should convert png image to jpeg", func() {
 			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
 			defer file.Close()
 			inputBrb := bytes.Buffer{}
@@ -39,5 +39,25 @@ var _ = Describe("s3Infra", func() {
 			format := http.DetectContentType(outputBin)
 			Expect(format).To(Equal("image/jpeg"))
 		})
+		It("Should convert jpeg image to jpeg", func() {
+			file, _ := os.Open(filePath("testdata/jpeg/airplane-1mb.jpg"))
+			defer file.Close()
+			inputBrb := bytes.Buffer{}
+			inputBrb.ReadFrom(file)
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ConvertFormat(inputBin)
+			format := http.DetectContentType(outputBin)
+			Expect(format).To(Equal("image/jpeg"))
+		})
 	})
+	// Context("Resize", func() {
+	// 	It("Should resize image to limit", func() {
+	// 		file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
+	// 		defer file.Close()
+	// 		inputBrb := bytes.Buffer{}
+	// 		inputBrb.ReadFrom(file)
+	// 		inputBin := inputBrb.Bytes()
+	// 		outputBin, _ := domain.ResizeToLimit(inputBin)
+	// 	})
+	// })
 })
