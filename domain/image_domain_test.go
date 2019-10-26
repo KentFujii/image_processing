@@ -34,8 +34,9 @@ var _ = Describe("s3Infra", func() {
 			defer file.Close()
 			inputBrb := bytes.Buffer{}
 			inputBrb.ReadFrom(file)
-			inputBin := brb.Bytes()
-			outputBin := domain.ConvertFormat(inputBin)
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ConvertFormat(inputBin)
+			fmt.Println(outputBin)
 			Expect(nil).To(BeNil())
 		})
 	})
