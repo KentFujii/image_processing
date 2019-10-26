@@ -3,6 +3,7 @@ package domain
 import (
 	"bytes"
 	"os/exec"
+	"strconv"
 	"golang.org/x/xerrors"
 )
 
@@ -13,10 +14,6 @@ type imageDomain struct {
 	ResizeToFit map[string]int
 }
 
-// https://socketloop.com/tutorials/golang-convert-an-image-file-to-byte
-// https://socketloop.com/tutorials/golang-convert-byte-to-image
-// https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
-// cat domain/testdata/png/ocean-1mb.png | convert - jpeg:- | identify -
 func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	input := bytes.NewReader(bin)
 	var output bytes.Buffer
@@ -29,9 +26,20 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
-func (d *imageDomain) Resize(bin []byte) ([]byte, error) {
-	return bin, nil
+// cat domain/testdata/png/ocean-1mb.png | convert -resize 600x600 - jpeg:- | identify -
+// http://noodles-mtb.hatenablog.com/entry/2013/07/08/151316
+func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	// resize_to_limit
+	// 縦横両方とも閾値より小さければそのままbinを返す
+	input := bytes.NewReader(bin)
+	var output bytes.Buffer
+	cmd := exec.Command("convert", strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]), "-", "-")
+	cmd.Stdin = input
+	cmd.Stdout = &output
+	if err := cmd.Run(); err != nil {
+		return nil, xerrors.Errorf("Resize error: %w", err)
+	}
+	return output.Bytes(), nil
 }
 
 // func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {

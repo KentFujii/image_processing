@@ -5,7 +5,10 @@ import (
 	"runtime"
 	"os"
 	"bytes"
-	"net/http"
+	"image"
+	_ "image/jpeg"
+	_ "image/gif"
+	_ "image/png"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -28,17 +31,9 @@ var _ = Describe("s3Infra", func() {
 			ResizeToFit: map[string]int{"height": 100, "width": 100},
 		}
 	})
+	// https://www.admfactory.com/how-to-get-the-dimensions-of-an-image-in-golang/
+	// https://gist.github.com/akhenakh/8462840
 	Context("ConvertFormat", func() {
-		It("Should convert png image to jpeg", func() {
-			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
-			defer file.Close()
-			inputBrb := bytes.Buffer{}
-			inputBrb.ReadFrom(file)
-			inputBin := inputBrb.Bytes()
-			outputBin, _ := domain.ConvertFormat(inputBin)
-			format := http.DetectContentType(outputBin)
-			Expect(format).To(Equal("image/jpeg"))
-		})
 		It("Should convert jpeg image to jpeg", func() {
 			file, _ := os.Open(filePath("testdata/jpeg/airplane-1mb.jpg"))
 			defer file.Close()
@@ -46,18 +41,31 @@ var _ = Describe("s3Infra", func() {
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
 			outputBin, _ := domain.ConvertFormat(inputBin)
-			format := http.DetectContentType(outputBin)
-			Expect(format).To(Equal("image/jpeg"))
+			outputBrb := bytes.NewReader(outputBin)
+			_, format, _ := image.DecodeConfig(outputBrb)
+			Expect(format).To(Equal("jpeg"))
+		})
+		It("Should convert png image to jpeg", func() {
+			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
+			defer file.Close()
+			inputBrb := bytes.Buffer{}
+			inputBrb.ReadFrom(file)
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ConvertFormat(inputBin)
+			outputBrb := bytes.NewReader(outputBin)
+			_, format, _ := image.DecodeConfig(outputBrb)
+			Expect(format).To(Equal("jpeg"))
 		})
 	})
-	// Context("Resize", func() {
+	// Context("ResizeImageToLimit", func() {
 	// 	It("Should resize image to limit", func() {
-	// 		file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
+	// 		file, _ := os.Open(filePath("testdata/jpeg/airplane-1mb.jpg"))
 	// 		defer file.Close()
 	// 		inputBrb := bytes.Buffer{}
 	// 		inputBrb.ReadFrom(file)
 	// 		inputBin := inputBrb.Bytes()
-	// 		outputBin, _ := domain.ResizeToLimit(inputBin)
+	// 		outputBin, _ := domain.ResizeImageToLimit(inputBin)
+	// 		Expect(format).To(Equal("image/jpeg"))
 	// 	})
 	// })
 })
