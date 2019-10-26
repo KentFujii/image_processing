@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"os"
 	"bytes"
-	"fmt"
+	"net/http"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -36,8 +36,8 @@ var _ = Describe("s3Infra", func() {
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
 			outputBin, _ := domain.ConvertFormat(inputBin)
-			fmt.Println(outputBin)
-			Expect(nil).To(BeNil())
+			format := http.DetectContentType(outputBin)
+			Expect(format).To(Equal("image/jpeg"))
 		})
 	})
 })
