@@ -4,7 +4,6 @@ import (
 	"path"
 	"runtime"
 	"os"
-	"fmt"
 	"bytes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -28,13 +27,13 @@ var _ = Describe("s3Infra", func() {
 			ResizeToFit: map[string]int{"height": 100, "width": 100},
 		}
 	})
-	Context("ConvertImage", func() {
+	Context("ConvertFormat", func() {
 		It("Should convert png image to jpg", func() {
 			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
 			defer file.Close()
 			brb := bytes.Buffer{}
 			brb.ReadFrom(file)
-			fmt.Println(domain.ConvertImage(brb.Bytes()))
+			domain.ConvertFormat(brb.Bytes())
 			Expect(nil).To(BeNil())
 		})
 	})

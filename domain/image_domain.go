@@ -1,7 +1,9 @@
 package domain
 
 import (
-	// "os/exec"
+	"fmt"
+	"bytes"
+	"os/exec"
 )
 
 type imageDomain struct {
@@ -14,11 +16,18 @@ type imageDomain struct {
 // https://socketloop.com/tutorials/golang-convert-an-image-file-to-byte
 // https://socketloop.com/tutorials/golang-convert-byte-to-image
 // https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
-// identify butterfly-50kb.jpg
-func (i *imageDomain) ConvertImage(bin []byte) []byte {
+// cat domain/testdata/png/ocean-1mb.png | convert - jpeg:- | identify -
+func (i *imageDomain) ConvertFormat(bin []byte) []byte {
 	// Read
 	// Convert
 	// Resize
+	input := bytes.NewReader(bin)
+	var output bytes.Buffer
+	cmd := exec.Command("convert", "-")
+	cmd.Stdin = input
+	cmd.Stdout = &output
+	cmd.Run()
+	fmt.Println(output.String())
 	return bin
 }
 
