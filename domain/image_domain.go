@@ -1,9 +1,9 @@
 package domain
 
 import (
-	"fmt"
 	"bytes"
 	"os/exec"
+	"golang.org/x/xerrors"
 )
 
 type imageDomain struct {
@@ -17,18 +17,16 @@ type imageDomain struct {
 // https://socketloop.com/tutorials/golang-convert-byte-to-image
 // https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go
 // cat domain/testdata/png/ocean-1mb.png | convert - jpeg:- | identify -
-func (i *imageDomain) ConvertFormat(bin []byte) []byte {
-	// Read
-	// Convert
-	// Resize
+func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	input := bytes.NewReader(bin)
 	var output bytes.Buffer
-	cmd := exec.Command("convert", "-")
+	cmd := exec.Command("convert", "-", d.ConvertTo + ":-")
 	cmd.Stdin = input
 	cmd.Stdout = &output
-	cmd.Run()
-	fmt.Println(output.String())
-	return bin
+	if err := cmd.Run(); err != nil {
+		return nil, xerrors.Errorf("ConvertFormat error: %w", err)
+	}
+	return output.Bytes(), nil
 }
 
 // func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {

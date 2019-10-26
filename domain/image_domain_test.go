@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"os"
 	"bytes"
+	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -21,7 +22,7 @@ var _ = Describe("s3Infra", func() {
 	var domain imageDomain
 	BeforeEach(func() {
 		domain = imageDomain{
-			ConvertTo: "jpg",
+			ConvertTo: "jpeg",
 			FormatWhitelist: []string{"jpeg", "gif", "png"},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},
 			ResizeToFit: map[string]int{"height": 100, "width": 100},
@@ -31,9 +32,10 @@ var _ = Describe("s3Infra", func() {
 		It("Should convert png image to jpg", func() {
 			file, _ := os.Open(filePath("testdata/png/ocean-1mb.png"))
 			defer file.Close()
-			brb := bytes.Buffer{}
-			brb.ReadFrom(file)
-			domain.ConvertFormat(brb.Bytes())
+			inputBrb := bytes.Buffer{}
+			inputBrb.ReadFrom(file)
+			inputBin := brb.Bytes()
+			outputBin := domain.ConvertFormat(inputBin)
 			Expect(nil).To(BeNil())
 		})
 	})
