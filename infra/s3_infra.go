@@ -2,6 +2,7 @@ package infra
 
 import (
 	"bytes"
+	"net/http"
 	"golang.org/x/xerrors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -13,12 +14,12 @@ type s3Infra struct {
 	Bucket string
 }
 
-func (i *s3Infra) Put(key string, content []byte, contentType string) error {
+func (i *s3Infra) Put(key string, content []byte) error {
 	putObjectParams := &s3.PutObjectInput{
 		Bucket: aws.String(i.Bucket),
 		Key: aws.String(key),
 		Body: bytes.NewReader(content),
-		ContentType: aws.String(contentType),
+		ContentType: aws.String(http.DetectContentType(content)),
 	}
 	_, err := i.Client.PutObject(putObjectParams)
 	if err != nil {
