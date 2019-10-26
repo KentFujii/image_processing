@@ -57,7 +57,7 @@ var _ = Describe("s3Infra", func() {
 	})
 	Context("Put", func() {
 		It("Should put s3 object", func() {
-			Expect(infra.Put("testKey", "testContent", "image/jpeg")).To(BeNil())
+			Expect(infra.Put("testKey", []byte("testContent"), "image/jpeg")).To(BeNil())
 		})
 	})
 	Context("List", func() {

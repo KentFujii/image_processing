@@ -13,11 +13,11 @@ type s3Infra struct {
 	Bucket string
 }
 
-func (i *s3Infra) Put(key string, content string, contentType string) error {
+func (i *s3Infra) Put(key string, content []byte, contentType string) error {
 	putObjectParams := &s3.PutObjectInput{
 		Bucket: aws.String(i.Bucket),
 		Key: aws.String(key),
-		Body: bytes.NewReader([]byte(content)),
+		Body: bytes.NewReader(content),
 		ContentType: aws.String(contentType),
 	}
 	_, err := i.Client.PutObject(putObjectParams)
