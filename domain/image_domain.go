@@ -26,14 +26,12 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
-// cat domain/testdata/png/ocean-1mb.png | convert -resize 600x600 - jpeg:- | identify -
-// http://noodles-mtb.hatenablog.com/entry/2013/07/08/151316
 func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	// resize_to_limit
 	// 縦横両方とも閾値より小さければそのままbinを返す
 	input := bytes.NewReader(bin)
 	var output bytes.Buffer
-	cmd := exec.Command("convert", strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]), "-", "-")
+	cmd := exec.Command("convert", "-resize", strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]), "-", "-")
 	cmd.Stdin = input
 	cmd.Stdout = &output
 	if err := cmd.Run(); err != nil {

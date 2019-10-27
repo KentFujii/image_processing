@@ -6,6 +6,7 @@ import (
 	"os"
 	"bytes"
 	"image"
+	"io"
 	_ "image/jpeg"
 	_ "image/gif"
 	_ "image/png"
@@ -31,8 +32,6 @@ var _ = Describe("s3Infra", func() {
 			ResizeToFit: map[string]int{"height": 100, "width": 100},
 		}
 	})
-	// https://www.admfactory.com/how-to-get-the-dimensions-of-an-image-in-golang/
-	// https://gist.github.com/akhenakh/8462840
 	Context("ConvertFormat", func() {
 		It("Should convert jpeg image to jpeg", func() {
 			file, _ := os.Open(filePath("testdata/jpeg/airplane-1mb.jpg"))
@@ -57,15 +56,38 @@ var _ = Describe("s3Infra", func() {
 			Expect(format).To(Equal("jpeg"))
 		})
 	})
-	// Context("ResizeImageToLimit", func() {
-	// 	It("Should resize image to limit", func() {
-	// 		file, _ := os.Open(filePath("testdata/jpeg/airplane-1mb.jpg"))
-	// 		defer file.Close()
-	// 		inputBrb := bytes.Buffer{}
-	// 		inputBrb.ReadFrom(file)
-	// 		inputBin := inputBrb.Bytes()
-	// 		outputBin, _ := domain.ResizeImageToLimit(inputBin)
-	// 		Expect(format).To(Equal("image/jpeg"))
-	// 	})
-	// })
+	Context("ResizeImageToLimit", func() {
+		It("Should resize 689x689 image to limit", func() {
+			file, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
+			defer file.Close()
+			var config image.Config
+			inputBrb := bytes.NewBuffer(nil)
+			r := io.TeeReader(file, inputBrb)
+			config, _, _ = image.DecodeConfig(r)
+			Expect(config.Height).To(Equal(689))
+			Expect(config.Width).To(Equal(689))
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ResizeImageToLimit(inputBin)
+			outputBrb := bytes.NewReader(outputBin)
+			config, _, _ = image.DecodeConfig(outputBrb)
+			Expect(config.Height).To(Equal(600))
+			Expect(config.Width).To(Equal(600))
+		})
+		It("Should resize 272x170 image to limit", func() {
+			file, _ := os.Open(filePath("testdata/png/mountain-100kb.png"))
+			defer file.Close()
+			var config image.Config
+			inputBrb := bytes.NewBuffer(nil)
+			r := io.TeeReader(file, inputBrb)
+			config, _, _ = image.DecodeConfig(r)
+			Expect(config.Height).To(Equal(272))
+			Expect(config.Width).To(Equal(170))
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ResizeImageToLimit(inputBin)
+			outputBrb := bytes.NewReader(outputBin)
+			config, _, _ = image.DecodeConfig(outputBrb)
+			Expect(config.Height).To(Equal(272))
+			Expect(config.Width).To(Equal(170))
+		})
+	})
 })
