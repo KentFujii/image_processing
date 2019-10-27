@@ -39,14 +39,19 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
+// 安全のためstdinは全部Tempfileを経由する、Tempfileの場所をConfigに追加
+// https://golang.org/pkg/io/ioutil/#TempFile
+// root@505fec980135:/go/src# cat domain/testdata/jpeg/butterfly-100kb.jpg | convert -resize 600x600 - - | identify -
+// -=>/tmp/magick-39630KRPu1RZEhUEX JPEG 600x600 600x600+0+0 8-bit sRGB 79069B 0.000u 0:00.000
 // http://noodles-mtb.hatenablog.com/entry/2013/07/08/151316
 // 縦横比を保持したまま、指定されたサイズに収まるようリサイズします。
 // https://qiita.com/kwst/items/c40817b3cdf841995257
 // https://rmagick.github.io/image1.html#composite
 // dest.composite(src, x, y, composite_op) -> image
-// composite -compose difference domain/testdata/jpeg/butterfly-100kb.jpg domain/testdata/jpeg/butterfly-500kb.jpg sample.jpg
+// composite -compose difference domain/testdata/jpeg/butterfly-100kb.jpg domain/testdata/jpeg/butterfly-500kb.jpg sample.jpeg
 // cat domain/testdata/jpeg/butterfly-100kb.jpg | composite -compose difference - domain/testdata/jpeg/butterfly-500kb.jpg sample.jpg
 // cat domain/testdata/jpeg/butterfly-500kb.jpg | composite -compose difference domain/testdata/jpeg/butterfly-100kb.jpg - sample.jpg
+// sourceBinとtargetBinをtmpに入れて結果を出力
 func (i *imageDomain) CompareImage(sourceBin []byte, targetBin []byte) (bool, error) {
 	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
 	// magick_remote_image = Magick::Image.from_blob(remote_image_bin).first
