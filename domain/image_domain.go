@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os/exec"
 	"strconv"
+	"fmt"
 	"golang.org/x/xerrors"
 )
 
@@ -40,12 +41,14 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
-// func (i *imageMagickInfra) CompareImage(sourceBlob []byte, targetBlob []byte) bool {
-// 	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
-// 	// magick_remote_image = Magick::Image.from_blob(remote_image_bin).first
-// 	// local_small_image = magick_local_image.resize_to_fit(100)
-// 	// remote_small_image = magick_remote_image.resize_to_fit(100)
-// 	// diff = local_small_image.composite(remote_small_image, 0, 0, Magick::DifferenceCompositeOp)
-// 	// diff.channel_mean.first.to_i <= 3500
-// 	return true
-// }
+// http://noodles-mtb.hatenablog.com/entry/2013/07/08/151316
+// 縦横比を保持したまま、指定されたサイズに収まるようリサイズします。
+func (i *imageDomain) CompareImage(sourceBin []byte, targetBin []byte) (bool, error) {
+	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
+	// magick_remote_image = Magick::Image.from_blob(remote_image_bin).first
+	// local_small_image = magick_local_image.resize_to_fit(100)
+	// remote_small_image = magick_remote_image.resize_to_fit(100)
+	// diff = local_small_image.composite(remote_small_image, 0, 0, Magick::DifferenceCompositeOp)
+	// diff.channel_mean.first.to_i <= 3500
+	return true
+}

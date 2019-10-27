@@ -90,4 +90,8 @@ var _ = Describe("s3Infra", func() {
 			Expect(config.Width).To(Equal(170))
 		})
 	})
+	Context("CompareImage", func() {
+		It("Should compare jpeg files and return true", func() {
+		})
+	})
 })
