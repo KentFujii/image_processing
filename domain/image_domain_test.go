@@ -92,6 +92,18 @@ var _ = Describe("s3Infra", func() {
 	})
 	Context("CompareImage", func() {
 		It("Should compare jpeg files and return true", func() {
+			sourceFile, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
+			defer sourceFile.Close()
+			inputSourceBrb := bytes.Buffer{}
+			inputSourceBrb.ReadFrom(sourceFile)
+			inputSourceBin := inputSourceBrb.Bytes()
+			targetFile, _ := os.Open(filePath("testdata/jpeg/butterfly-500kb.jpg"))
+			defer targetFile.Close()
+			inputTargetBrb := bytes.Buffer{}
+			inputTargetBrb.ReadFrom(targetFile)
+			inputTargetBin := inputTargetBrb.Bytes()
+			result, _ := domain.CompareImage(inputSourceBin, inputTargetBin)
+			Expect(result).To(Equal(true))
 		})
 	})
 })
