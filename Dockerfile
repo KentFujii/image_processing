@@ -1,7 +1,7 @@
 FROM golang:1.12.9
 
 RUN apt-get update && \
-  apt-get install -y imagemagick libmagickcore-dev libmagickwand-dev && \
+  apt-get install -y imagemagick && \
   apt-get clean
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
