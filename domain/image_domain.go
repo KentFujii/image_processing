@@ -26,9 +26,14 @@ type imageDomain struct {
 }
 
 func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
+	inputBrb := bytes.NewReader(bin)
+	_, format, _ := image.DecodeConfig(inputBrb)
+	u, _ := uuid.NewRandom()
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-convertFormat-*" + "." + format)
+	inputTempFile.Write(bin)
+	defer os.Remove(inputTempFile.Name())
 	var outputBrb bytes.Buffer
-	cmd := exec.Command("convert", "-", d.ConvertTo + ":-")
-	cmd.Stdin = bytes.NewReader(bin)
+	cmd := exec.Command("convert", inputTempFile.Name(), d.ConvertTo + ":-")
 	cmd.Stdout = &outputBrb
 	if err := cmd.Run(); err != nil {
 		return nil, xerrors.Errorf("ConvertFormat error: %w", err)
@@ -37,57 +42,69 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 }
 
 func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
+	inputBrb := bytes.NewReader(bin)
+	_, format, _ := image.DecodeConfig(inputBrb)
+	u, _ := uuid.NewRandom()
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-resizeImageToLimit-*" + "." + format)
+	inputTempFile.Write(bin)
+	defer os.Remove(inputTempFile.Name())
 	var outputBrb bytes.Buffer
 	size := strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]) + ">"
-	cmd := exec.Command("convert", "-", "-resize", size , "-")
-	cmd.Stdin = bytes.NewReader(bin)
+	cmd := exec.Command("convert", inputTempFile.Name(), "-resize", size , "-")
 	cmd.Stdout = &outputBrb
 	if err := cmd.Run(); err != nil {
-		return nil, xerrors.Errorf("ResizeImageToLimit error: %w", err)
+		return nil, xerrors.Errorf("Resize error: %w", err)
 	}
 	return outputBrb.Bytes(), nil
 }
 
+// https://github.com/KentFujii/image_processing/commit/c8bc63ae30b75e69731d1879f343668b0a1e7119#diff-bb04ee0160ff1fefc1c86397621d9d45
+// 全てtmpでやり取りする
 func (i *imageDomain) CompareImage(srcBin []byte, dstBin []byte) (bool, error) {
 	_, srcFormat, _ := image.DecodeConfig(bytes.NewReader(srcBin))
-	srcU, _ := uuid.NewRandom()
-	inputSrcTempFile, _ := ioutil.TempFile(os.TempDir(), srcU.String() + "-compareImage-src-*" + "." + srcFormat)
+	inputSrcU, _ := uuid.NewRandom()
+	inputSrcTempFile, _ := ioutil.TempFile(os.TempDir(), inputSrcU.String() + "-compareImage-inputSrc-*" + "." + srcFormat)
+	inputSrcTempFile.Write(srcBin)
 	var outputSrcBrb bytes.Buffer
-	srcCmd := exec.Command("convert", "-", "-resize", "100x100" , "-")
-	srcCmd.Stdin = bytes.NewReader(srcBin)
+	srcCmd := exec.Command("convert", inputSrcTempFile.Name(), "-resize", "100x100" , "-")
 	srcCmd.Stdout = &outputSrcBrb
 	if srcCmdErr := srcCmd.Run(); srcCmdErr != nil {
 		return false, xerrors.Errorf("CompareImage error: %w", srcCmdErr)
 	}
-	inputSrcTempFile.Write(outputSrcBrb.Bytes())
+	outputSrcU, _ := uuid.NewRandom()
+	outputSrcTempFile, _ := ioutil.TempFile(os.TempDir(), outputSrcU.String() + "-compareImage-outputSrc-*" + "." + srcFormat)
+	outputSrcTempFile.Write(outputSrcBrb.Bytes())
 	defer os.Remove(inputSrcTempFile.Name())
+	defer os.Remove(outputSrcTempFile.Name())
 
 	_, dstFormat, _ := image.DecodeConfig(bytes.NewReader(dstBin))
-	dstU, _ := uuid.NewRandom()
-	inputDstTempFile, _ := ioutil.TempFile(os.TempDir(), dstU.String() + "-compareImage-dst-*" + "." + dstFormat)
+	inputDstU, _ := uuid.NewRandom()
+	inputDstTempFile, _ := ioutil.TempFile(os.TempDir(), inputDstU.String() + "-compareImage-inputDst-*" + "." + dstFormat)
+	inputDstTempFile.Write(dstBin)
 	var outputDstBrb bytes.Buffer
-	dstCmd := exec.Command("convert", "-", "-resize", "100x100" , "-")
-	dstCmd.Stdin = bytes.NewReader(dstBin)
+	dstCmd := exec.Command("convert", inputDstTempFile.Name(), "-resize", "100x100" , "-")
 	dstCmd.Stdout = &outputDstBrb
 	if dstCmdErr := dstCmd.Run(); dstCmdErr != nil {
-		fmt.Println(11111)
 		return false, xerrors.Errorf("CompareImage error: %w", dstCmdErr)
 	}
-	inputDstTempFile.Write(outputDstBrb.Bytes())
+	outputDstU, _ := uuid.NewRandom()
+	outputDstTempFile, _ := ioutil.TempFile(os.TempDir(), outputDstU.String() + "-compareImage-outputDst-*" + "." + dstFormat)
+	outputDstTempFile.Write(outputDstBrb.Bytes())
 	defer os.Remove(inputDstTempFile.Name())
+	defer os.Remove(outputDstTempFile.Name())
 
 	var resultBrb bytes.Buffer
-	c1 := exec.Command("convert", "-compose", "difference", inputSrcTempFile.Name(), inputDstTempFile.Name(), "sample.jpg")
-	c2 := exec.Command("identify", "-format", "'%[mean]'", "-")
+	compositeCmd := exec.Command("composite", "-compose", "difference", outputSrcTempFile.Name(), outputDstTempFile.Name(), "-")
+	identifyCmd := exec.Command("identify", "-format", "'%[mean]'", "-")
 	pr, pw := io.Pipe()
-	c1.Stdout = pw
-	c2.Stdin = pr
-	c2.Stdout = &resultBrb
-	c1.Start()
-	c2.Start()
-	c1.Wait()
+	compositeCmd.Stdout = pw
+	identifyCmd.Stdin = pr
+	identifyCmd.Stdout = &resultBrb
+	compositeCmd.Start()
+	identifyCmd.Start()
+	compositeCmd.Wait()
 	pw.Close()
-	c2.Wait()
+	identifyCmd.Wait()
 	diff := strings.Trim(resultBrb.String(), `'`)
 	fmt.Println(diff)
 
