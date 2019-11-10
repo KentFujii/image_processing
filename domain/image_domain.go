@@ -2,11 +2,13 @@ package domain
 
 import (
 	"bytes"
-	"os/exec"
 	"os"
+	"os/exec"
+	"io"
 	"io/ioutil"
 	"strconv"
-	"fmt"
+	"strings"
+	"math/big"
 	"image"
 	_ "image/jpeg"
 	_ "image/gif"
@@ -26,9 +28,8 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	inputBrb := bytes.NewReader(bin)
 	_, format, _ := image.DecodeConfig(inputBrb)
 	u, _ := uuid.NewRandom()
-	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-*" + "." + format)
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-convertFormat-*" + "." + format)
 	inputTempFile.Write(bin)
-	fmt.Println(inputTempFile.Name())
 	defer os.Remove(inputTempFile.Name())
 	var outputBrb bytes.Buffer
 	cmd := exec.Command("convert", inputTempFile.Name(), d.ConvertTo + ":-")
@@ -43,9 +44,8 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	inputBrb := bytes.NewReader(bin)
 	_, format, _ := image.DecodeConfig(inputBrb)
 	u, _ := uuid.NewRandom()
-	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-*" + "." + format)
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-resizeImageToLimit-*" + "." + format)
 	inputTempFile.Write(bin)
-	fmt.Println(inputTempFile.Name())
 	defer os.Remove(inputTempFile.Name())
 	var outputBrb bytes.Buffer
 	size := strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]) + ">"
@@ -57,31 +57,41 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	return outputBrb.Bytes(), nil
 }
 
-// https://hawksnowlog.blogspot.com/2019/04/generate-uuid-with-golang.html
-// https://golang.org/pkg/io/ioutil/#TempFile
-// 安全のためstdinは全部Tempfileを経由する、Tempfileの場所をConfigに追加
-// root@505fec980135:/go/src# cat domain/testdata/jpeg/butterfly-100kb.jpg | convert -resize 600x600 - - | identify -
-// -=>/tmp/magick-39630KRPu1RZEhUEX JPEG 600x600 600x600+0+0 8-bit sRGB 79069B 0.000u 0:00.000
-// http://noodles-mtb.hatenablog.com/entry/2013/07/08/151316
-// 縦横比を保持したまま、指定されたサイズに収まるようリサイズします。
-// https://qiita.com/kwst/items/c40817b3cdf841995257
-// https://rmagick.github.io/image1.html#composite
-// dest.composite(src, x, y, composite_op) -> image
-// composite -compose difference domain/testdata/jpeg/butterfly-100kb.jpg domain/testdata/jpeg/butterfly-500kb.jpg sample.jpeg
-// cat domain/testdata/jpeg/butterfly-100kb.jpg | composite -compose difference - domain/testdata/jpeg/butterfly-500kb.jpg sample.jpg
 func (i *imageDomain) CompareImage(srcBin []byte, dstBin []byte) (bool, error) {
-	// magick_local_image = Magick::Image.from_blob(local_image_bin).first
-	// magick_remote_image = Magick::Image.from_blob(remote_image_bin).first
-	// local_small_image = magick_local_image.resize_to_fit(100)
-	// remote_small_image = magick_remote_image.resize_to_fit(100)
-	// diff = local_small_image.composite(remote_small_image, 0, 0, Magick::DifferenceCompositeOp)
-	// diff.channel_mean.first.to_i <= 3500
-	u, _ := uuid.NewRandom()
-	fmt.Println(u)
-	fmt.Println(srcBin)
-	fmt.Println(dstBin)
-	// srcTmpfile, err := ioutil.TempFile("/tmp", "example")
-	// sourceTmpfile, err := ioutil.TempFile("", "example")
-	// input := bytes.NewReader(bin)
-	return true, nil
+	inputSrcBrb := bytes.NewReader(srcBin)
+	_, srcFormat, _ := image.DecodeConfig(inputSrcBrb)
+	srcU, _ := uuid.NewRandom()
+	inputSrcTempFile, _ := ioutil.TempFile(os.TempDir(), srcU.String() + "-compareImage-src-*" + "." + srcFormat)
+	inputSrcTempFile.Write(srcBin)
+	defer os.Remove(inputSrcTempFile.Name())
+
+	inputDstBrb := bytes.NewReader(dstBin)
+	_, dstFormat, _ := image.DecodeConfig(inputDstBrb)
+	dstU, _ := uuid.NewRandom()
+	inputDstTempFile, _ := ioutil.TempFile(os.TempDir(), dstU.String() + "-compareImage-dst-*" + "." + dstFormat)
+	inputDstTempFile.Write(dstBin)
+	defer os.Remove(inputDstTempFile.Name())
+
+	var resultBrb bytes.Buffer
+	c1 := exec.Command("convert", "-compose", "difference", inputSrcTempFile.Name(), inputDstTempFile.Name(), "-")
+	c2 := exec.Command("identify", "-format", "'%[mean]'", "-")
+	pr, pw := io.Pipe()
+	c1.Stdout = pw
+	c2.Stdin = pr
+	c2.Stdout = &resultBrb
+	c1.Start()
+	c2.Start()
+	c1.Wait()
+	pw.Close()
+	c2.Wait()
+	diff := strings.Trim(resultBrb.String(), `'`)
+
+	diffF, _ := strconv.ParseFloat(diff, 64)
+	diffBigF := big.NewFloat(diffF)
+	thldBigF := big.NewFloat(3500.0)
+	result := diffBigF.Cmp(thldBigF)
+	if result < 0 {
+		return true, nil
+	}
+	return false, nil
 }

@@ -84,17 +84,17 @@ var _ = Describe("imageDomain", func() {
 	})
 	Context("CompareImage", func() {
 		It("Should compare jpeg files and return true", func() {
-			sourceFile, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
-			defer sourceFile.Close()
-			inputSourceBrb := bytes.Buffer{}
-			inputSourceBrb.ReadFrom(sourceFile)
-			inputSourceBin := inputSourceBrb.Bytes()
-			targetFile, _ := os.Open(filePath("testdata/jpeg/butterfly-500kb.jpg"))
-			defer targetFile.Close()
-			inputTargetBrb := bytes.Buffer{}
-			inputTargetBrb.ReadFrom(targetFile)
-			inputTargetBin := inputTargetBrb.Bytes()
-			result, _ := domain.CompareImage(inputSourceBin, inputTargetBin)
+			srcFile, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
+			defer srcFile.Close()
+			inputSrcBrb := bytes.Buffer{}
+			inputSrcBrb.ReadFrom(srcFile)
+			inputSrcBin := inputSrcBrb.Bytes()
+			dstFile, _ := os.Open(filePath("testdata/jpeg/butterfly-500kb.jpg"))
+			defer dstFile.Close()
+			inputDstBrb := bytes.Buffer{}
+			inputDstBrb.ReadFrom(dstFile)
+			inputDstBin := inputDstBrb.Bytes()
+			result, _ := domain.CompareImage(inputSrcBin, inputDstBin)
 			Expect(result).To(Equal(true))
 		})
 	})
