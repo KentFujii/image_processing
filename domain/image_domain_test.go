@@ -6,7 +6,7 @@ import (
 	"os"
 	"bytes"
 	"image"
-	"io"
+	// "io"
 	_ "image/jpeg"
 	_ "image/gif"
 	_ "image/png"
@@ -60,51 +60,42 @@ var _ = Describe("imageDomain", func() {
 		It("Should resize 689x689 image to limit", func() {
 			file, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
 			defer file.Close()
-			var config image.Config
-			inputBrb := bytes.NewBuffer(nil)
-			r := io.TeeReader(file, inputBrb)
-			config, _, _ = image.DecodeConfig(r)
-			Expect(config.Height).To(Equal(689))
-			Expect(config.Width).To(Equal(689))
+			inputBrb := bytes.Buffer{}
+			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
 			outputBin, _ := domain.ResizeImageToLimit(inputBin)
 			outputBrb := bytes.NewReader(outputBin)
-			config, _, _ = image.DecodeConfig(outputBrb)
+			config, _, _ := image.DecodeConfig(outputBrb)
 			Expect(config.Height).To(Equal(600))
 			Expect(config.Width).To(Equal(600))
 		})
-		// It("Should resize 272x170 image to limit", func() {
-		// 	// stdinだとうまく動かないのでtmpファイルにする
-		// 	file, _ := os.Open(filePath("testdata/png/mountain-100kb.png"))
-		// 	defer file.Close()
-		// 	var config image.Config
-		// 	inputBrb := bytes.NewBuffer(nil)
-		// 	r := io.TeeReader(file, inputBrb)
-		// 	config, _, _ = image.DecodeConfig(r)
-		// 	Expect(config.Height).To(Equal(170))
-		// 	Expect(config.Width).To(Equal(272))
-		// 	inputBin := inputBrb.Bytes()
-		// 	outputBin, _ := domain.ResizeImageToLimit(inputBin)
-		// 	outputBrb := bytes.NewReader(outputBin)
-		// 	config, _, _ = image.DecodeConfig(outputBrb)
-		// 	Expect(config.Height).To(Equal(170))
-		// 	Expect(config.Width).To(Equal(272))
-		// })
+		It("Should resize 272x170 image to limit", func() {
+			file, _ := os.Open(filePath("testdata/png/mountain-100kb.png"))
+			defer file.Close()
+			inputBrb := bytes.Buffer{}
+			inputBrb.ReadFrom(file)
+			inputBin := inputBrb.Bytes()
+			outputBin, _ := domain.ResizeImageToLimit(inputBin)
+			outputBrb := bytes.NewReader(outputBin)
+			config, _, _ := image.DecodeConfig(outputBrb)
+			Expect(config.Height).To(Equal(170))
+			Expect(config.Width).To(Equal(272))
+		})
 	})
-	// Context("CompareImage", func() {
-	// 	It("Should compare jpeg files and return true", func() {
-	// 		sourceFile, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
-	// 		defer sourceFile.Close()
-	// 		inputSourceBrb := bytes.Buffer{}
-	// 		inputSourceBrb.ReadFrom(sourceFile)
-	// 		inputSourceBin := inputSourceBrb.Bytes()
-	// 		targetFile, _ := os.Open(filePath("testdata/jpeg/butterfly-500kb.jpg"))
-	// 		defer targetFile.Close()
-	// 		inputTargetBrb := bytes.Buffer{}
-	// 		inputTargetBrb.ReadFrom(targetFile)
-	// 		inputTargetBin := inputTargetBrb.Bytes()
-	// 		result, _ := domain.CompareImage(inputSourceBin, inputTargetBin)
-	// 		Expect(result).To(Equal(true))
-	// 	})
-	// })
+	Context("CompareImage", func() {
+		It("Should compare jpeg files and return true", func() {
+			sourceFile, _ := os.Open(filePath("testdata/jpeg/butterfly-100kb.jpg"))
+			defer sourceFile.Close()
+			inputSourceBrb := bytes.Buffer{}
+			inputSourceBrb.ReadFrom(sourceFile)
+			inputSourceBin := inputSourceBrb.Bytes()
+			targetFile, _ := os.Open(filePath("testdata/jpeg/butterfly-500kb.jpg"))
+			defer targetFile.Close()
+			inputTargetBrb := bytes.Buffer{}
+			inputTargetBrb.ReadFrom(targetFile)
+			inputTargetBin := inputTargetBrb.Bytes()
+			result, _ := domain.CompareImage(inputSourceBin, inputTargetBin)
+			Expect(result).To(Equal(true))
+		})
+	})
 })

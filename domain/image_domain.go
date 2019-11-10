@@ -3,8 +3,14 @@ package domain
 import (
 	"bytes"
 	"os/exec"
+	"os"
+	"io/ioutil"
 	"strconv"
 	"fmt"
+	"image"
+	_ "image/jpeg"
+	_ "image/gif"
+	_ "image/png"
 	"golang.org/x/xerrors"
 	"github.com/google/uuid"
 )
@@ -17,36 +23,38 @@ type imageDomain struct {
 }
 
 func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
-	input := bytes.NewReader(bin)
-	var output bytes.Buffer
-	cmd := exec.Command("convert", "-", d.ConvertTo + ":-")
-	cmd.Stdin = input
-	cmd.Stdout = &output
+	inputBrb := bytes.NewReader(bin)
+	_, format, _ := image.DecodeConfig(inputBrb)
+	u, _ := uuid.NewRandom()
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-*" + "." + format)
+	inputTempFile.Write(bin)
+	fmt.Println(inputTempFile.Name())
+	defer os.Remove(inputTempFile.Name())
+	var outputBrb bytes.Buffer
+	cmd := exec.Command("convert", inputTempFile.Name(), d.ConvertTo + ":-")
+	cmd.Stdout = &outputBrb
 	if err := cmd.Run(); err != nil {
 		return nil, xerrors.Errorf("ConvertFormat error: %w", err)
 	}
-	return output.Bytes(), nil
+	return outputBrb.Bytes(), nil
 }
 
 func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
-	input := bytes.NewReader(bin)
-	var output bytes.Buffer
-	var stderr bytes.Buffer
-	// https://github.com/GoogleCloudPlatform/golang-samples/blob/master/functions/imagemagick/imagemagick.go#L93
-	size := strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"])
-	cmd := exec.Command("convert", "-resize", size, "-", "-")
-	cmd.Stdin = input
-	cmd.Stdout = &output
-	cmd.Stderr = &stderr
+	inputBrb := bytes.NewReader(bin)
+	_, format, _ := image.DecodeConfig(inputBrb)
+	u, _ := uuid.NewRandom()
+	inputTempFile, _ := ioutil.TempFile(os.TempDir(), u.String() + "-*" + "." + format)
+	inputTempFile.Write(bin)
+	fmt.Println(inputTempFile.Name())
+	defer os.Remove(inputTempFile.Name())
+	var outputBrb bytes.Buffer
+	size := strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]) + ">"
+	cmd := exec.Command("convert", inputTempFile.Name(), "-resize", size , "-")
+	cmd.Stdout = &outputBrb
 	if err := cmd.Run(); err != nil {
-		fmt.Println(11111)
-		// fmt.Println(cmd.Stdin)
-		fmt.Println(cmd.Args)
-		fmt.Println(stderr.String())
-		fmt.Println(err)
 		return nil, xerrors.Errorf("Resize error: %w", err)
 	}
-	return output.Bytes(), nil
+	return outputBrb.Bytes(), nil
 }
 
 // https://hawksnowlog.blogspot.com/2019/04/generate-uuid-with-golang.html
