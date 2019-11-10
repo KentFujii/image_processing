@@ -58,8 +58,6 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	return outputBrb.Bytes(), nil
 }
 
-// https://github.com/KentFujii/image_processing/commit/c8bc63ae30b75e69731d1879f343668b0a1e7119#diff-bb04ee0160ff1fefc1c86397621d9d45
-// 全てtmpでやり取りする
 func (i *imageDomain) CompareImage(srcBin []byte, dstBin []byte) (bool, error) {
 	_, srcFormat, _ := image.DecodeConfig(bytes.NewReader(srcBin))
 	inputSrcU, _ := uuid.NewRandom()
