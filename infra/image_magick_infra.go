@@ -1,4 +1,4 @@
-package domain
+package infra
 
 import (
 	"bytes"
@@ -17,16 +17,16 @@ import (
 	"github.com/google/uuid"
 )
 
-type imageDomain struct {
+type imageMagickInfra struct {
 	ConvertTo string
 	FormatWhitelist []string
 	ResizeToLimit map[string]int
 	ResizeToFit map[string]int
 }
 
-func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
+func (i *imageMagickInfra) ConvertFormat(bin []byte) ([]byte, error) {
 	var outputBrb bytes.Buffer
-	cmd := exec.Command("convert", "-", d.ConvertTo + ":-")
+	cmd := exec.Command("convert", "-", i.ConvertTo + ":-")
 	cmd.Stdin = bytes.NewReader(bin)
 	cmd.Stdout = &outputBrb
 	if err := cmd.Run(); err != nil {
@@ -35,9 +35,9 @@ func (d *imageDomain) ConvertFormat(bin []byte) ([]byte, error) {
 	return outputBrb.Bytes(), nil
 }
 
-func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
+func (i *imageMagickInfra) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	var outputBrb bytes.Buffer
-	size := strconv.Itoa(d.ResizeToLimit["height"]) + "x" + strconv.Itoa(d.ResizeToLimit["width"]) + ">"
+	size := strconv.Itoa(i.ResizeToLimit["height"]) + "x" + strconv.Itoa(i.ResizeToLimit["width"]) + ">"
 	cmd := exec.Command("convert", "-", "-resize", size , "-")
 	cmd.Stdin = bytes.NewReader(bin)
 	cmd.Stdout = &outputBrb
@@ -47,7 +47,7 @@ func (d *imageDomain) ResizeImageToLimit(bin []byte) ([]byte, error) {
 	return outputBrb.Bytes(), nil
 }
 
-func (i *imageDomain) CompareImage(srcBin []byte, dstBin []byte) (bool, error) {
+func (i *imageMagickInfra) CompareImage(srcBin []byte, dstBin []byte) (bool, error) {
 	var srcBrb bytes.Buffer
 	srcCmd := exec.Command("convert", "-", "-resize", "100x100" , "-")
 	srcCmd.Stdin = bytes.NewReader(srcBin)

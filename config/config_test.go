@@ -32,9 +32,9 @@ var _ = Describe("Config", func() {
 			Expect(c.UserAgent).To(Equal("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/602.4.8 (KHTML, like Gecko) Version/10.0.3 Safari/602.4.8"))
 		})
 	})
-	Context("NewImageConfig", func() {
-		It("Should read image config", func() {
-			c := NewImageConfig()
+	Context("NewImageMagickConfig", func() {
+		It("Should read image_magick config", func() {
+			c := NewImageMagickConfig()
 			Expect(c.ConvertTo).To(Equal("jpeg"))
 		})
 	})

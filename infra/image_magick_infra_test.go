@@ -1,4 +1,4 @@
-package domain
+package infra
 
 import (
 	"path"
@@ -6,7 +6,6 @@ import (
 	"os"
 	"bytes"
 	"image"
-	// "io"
 	_ "image/jpeg"
 	_ "image/gif"
 	_ "image/png"
@@ -22,10 +21,10 @@ func filePath(name string) string {
 	return path.Dir(filename) + "/" + name
 }
 
-var _ = Describe("imageDomain", func() {
-	var domain imageDomain
+var _ = Describe("imageMagickInfra", func() {
+	var infra imageMagickInfra
 	BeforeEach(func() {
-		domain = imageDomain{
+		infra = imageMagickInfra{
 			ConvertTo: "jpeg",
 			FormatWhitelist: []string{"jpeg", "gif", "png"},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},
@@ -39,7 +38,7 @@ var _ = Describe("imageDomain", func() {
 			inputBrb := bytes.Buffer{}
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
-			outputBin, _ := domain.ConvertFormat(inputBin)
+			outputBin, _ := infra.ConvertFormat(inputBin)
 			outputBrb := bytes.NewReader(outputBin)
 			_, format, _ := image.DecodeConfig(outputBrb)
 			Expect(format).To(Equal("jpeg"))
@@ -50,7 +49,7 @@ var _ = Describe("imageDomain", func() {
 			inputBrb := bytes.Buffer{}
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
-			outputBin, _ := domain.ConvertFormat(inputBin)
+			outputBin, _ := infra.ConvertFormat(inputBin)
 			outputBrb := bytes.NewReader(outputBin)
 			_, format, _ := image.DecodeConfig(outputBrb)
 			Expect(format).To(Equal("jpeg"))
@@ -63,7 +62,7 @@ var _ = Describe("imageDomain", func() {
 			inputBrb := bytes.Buffer{}
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
-			outputBin, _ := domain.ResizeImageToLimit(inputBin)
+			outputBin, _ := infra.ResizeImageToLimit(inputBin)
 			outputBrb := bytes.NewReader(outputBin)
 			config, _, _ := image.DecodeConfig(outputBrb)
 			Expect(config.Height).To(Equal(600))
@@ -75,7 +74,7 @@ var _ = Describe("imageDomain", func() {
 			inputBrb := bytes.Buffer{}
 			inputBrb.ReadFrom(file)
 			inputBin := inputBrb.Bytes()
-			outputBin, _ := domain.ResizeImageToLimit(inputBin)
+			outputBin, _ := infra.ResizeImageToLimit(inputBin)
 			outputBrb := bytes.NewReader(outputBin)
 			config, _, _ := image.DecodeConfig(outputBrb)
 			Expect(config.Height).To(Equal(170))
@@ -94,7 +93,7 @@ var _ = Describe("imageDomain", func() {
 			inputDstBrb := bytes.Buffer{}
 			inputDstBrb.ReadFrom(dstFile)
 			inputDstBin := inputDstBrb.Bytes()
-			result, _ := domain.CompareImage(inputSrcBin, inputDstBin)
+			result, _ := infra.CompareImage(inputSrcBin, inputDstBin)
 			Expect(result).To(Equal(true))
 		})
 	})

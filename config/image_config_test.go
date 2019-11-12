@@ -6,10 +6,10 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("imageConfig", func() {
-	var config imageConfig
+var _ = Describe("imageMagickConfig", func() {
+	var config imageMagickConfig
 	BeforeEach(func() {
-		config = imageConfig{
+		config = imageMagickConfig{
 			ConvertTo: "jpg",
 			FormatWhitelist: []string{"jpg", "jpeg", "gif", "png", ""},
 			ResizeToLimit: map[string]int{"height": 600, "width": 600},
