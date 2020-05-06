@@ -29,14 +29,14 @@ https://qiita.com/hmarf/items/7f4d39c48775c205b99b
 https://qiita.com/dich1/items/0871c9c1ff058d0d693b
 
 ```
-ui
+driver
 app
 domain
-infra
+adapter
 config
 ```
 
-- ui
+- driver
   - a layer manipulated from outer commands
   - ex. a cli of batch or a view of MVC
 - app
@@ -45,6 +45,6 @@ config
 - domain
   - a layer defining the business logic
   - ex. a model of MVC
-- infra
+- adapter
   - a layer wrapping IO
   - ex. interacting with IO like ORM
