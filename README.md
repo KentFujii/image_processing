@@ -29,22 +29,17 @@ https://qiita.com/hmarf/items/7f4d39c48775c205b99b
 https://qiita.com/dich1/items/0871c9c1ff058d0d693b
 
 ```
-driver
+adapter
 app
 domain
-adapter
-config
+driver
 ```
 
-- driver
-  - a layer manipulated from outer commands
-  - ex. a cli of batch or a view of MVC
-- app
-  - a layer scripting a behavior of the application
-  - ex. a controller of MVC
-- domain
-  - a layer defining the business logic
-  - ex. a model of MVC
 - adapter
-  - a layer wrapping IO
-  - ex. interacting with IO like ORM
+  - ex. Controllers/Gateways/Presenters
+- app
+  - ex. Application business rules
+- domain
+  - ex. Enterprise Business rules
+- driver
+  - ex. DB/Devices/UI/Web
